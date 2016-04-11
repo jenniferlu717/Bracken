@@ -1,5 +1,21 @@
 KRAKEN ABUNDANCE ESTIMATION
 ===========================
+
+Three steps are necessary to set up Kraken abundance estimation. It is assumed that
+${KRAKEN_DB} is the path to a built Kraken database, and all sequences are as '.fna' files in the
+${KRAKEN_DB}/library directory.
+
+Step 1: Search all library input sequences against the database
+
+kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library -name "*.fna" -exec cat {} + )  > database.kraken
+
+Step 2: Compute the classifications for each perfect read of ${READ_LENGTH} base pairs from one of the input sequences.
+With ${READ_LENGTH} = 75:
+
+count-kmer-abundances.pl 75 database.kraken  > database75mers.kraken_cnts
+
+Step 3:
+
 Given the expected kmer distribution for genomes in a kraken database along
 with a kraken report file, the number of reads belonging to each species (or
 genus) is estimated using the estimate_abundance.py file, run with the
