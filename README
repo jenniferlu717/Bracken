@@ -14,7 +14,7 @@ Step 2a: Search all library input sequences against the database
 Step 2b: Compute the classifications for each perfect read of ${READ_LENGTH} base pairs from one of the input sequences.
 With ${READ_LENGTH} = 75:
 
-    > count-kmer-abundances.pl 75 database.kraken  > database75mers.kraken_cnts
+    > perl count-kmer-abundances.pl --db=${KRAKEN_DB} --read-length=75 database.kraken  > database75mers.kraken_cnts
 
 Step 3: Generate the kmer distribution file using the following command line:
     
@@ -48,4 +48,5 @@ The following optional parameters may be specified:
 AUTHOR INFORMATION
 ======================
 Jennifer Lu (jlu26@jhmi.edu)
-Last Updated On: 04/01/2016
+Florian Breitwieser (fbreitw1@jhu.edu)
+Last Updated On: 05/23/2016
