@@ -2,20 +2,60 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 use List::MoreUtils qw/pairwise/;
-use Term::ProgressBar;
 use File::Basename;
-use File::stat;
 use Parallel::ForkManager;
+use Getopt::Long;
 
-scalar(@ARGV) == 2 or die "USAGE: ".`basename $0`." <read size> database.kraken \n";
+my $read_length = 75;
+my $n_threads = 1;
+my $db_path = ".";
+my $opt_help = 0;
+my $opt_version = 0;
+
+my $prog = basename($0);
+my $version = "0.1";
+my $USAGE = "Usage: $prog [options] <database.kraken>
+
+Options:
+  --db NAME               Path to Kraken DB (default: $db_path)
+  --threads NUM           Number of threads (default: $n_threads)
+  --read-length NUM       Read length (default: $read_length)
+  --help                  Print this message
+  --version               Print version information
+";
+
+GetOptions ("db=s" => \$db_path,
+            "l|read-length=i" => \$read_length, 
+            "v|version"  => \$opt_version,
+            "h|help" => \$opt_help
+) 
+or usage(1);
+
+sub usage {
+  my $exitval = shift;
+  print STDERR $USAGE;
+  exit $exitval;
+}
+
+sub version {
+  print STDERR "$prog version $version\n";
+  exit 0;
+}
+
+usage(0) if $opt_help;
+version() if $opt_version;
+
+if (!defined $ARGV[0] || !-f $ARGV[0]) {
+  print STDERR "Give database.kraken file as first command line argument.\n";
+  print STDERR "See '$prog --help' for more information.\n";
+  exit 1;
+}
 
 my $last_real_taxid;
 my $last_classified_taxid;
 my $current_hashref;
 my $current_cntref;
-my $read_length = shift;
 my $n=$read_length-31+1;
 
 
@@ -35,7 +75,7 @@ my ($seqid,$classified_taxid);
 
 my $counti = 0;
 my $countb = 0;
-my $pm = new Parallel::ForkManager(35);
+my $pm = new Parallel::ForkManager($n_threads);
 while (my $line = <>) {
     printf STDERR "\r%3.2f%%; line %10s / %s",(++$current_line/$n_lines*100),$current_line,$n_lines;
     $pm->start and next; # do the fork
@@ -122,7 +162,8 @@ print STDERR "Done: $counti; $countb.\n";
 
 sub get_seqid_mapping {
   my %seqid_to_taxid;
-  open (my $S, "<", "seqid2taxid.map");
+  open (my $S, "<", "$db_path/seqid2taxid.map")
+      or die "Can't open seqid2taxid.map file - make sure the Kraken database path is defined correctly. $!\n";
   while (<$S>) {
     chomp;
     my ($seqid,$taxid) = split(/\t/);
@@ -140,8 +181,8 @@ sub get_taxid_to_rankid {
   #} else {
   ++$|;
   print STDERR "Reading nodes.dmp ... "; 
-    open NODES, "<", "./taxonomy/nodes.dmp"
-      or die "can't open nodes file: $!\n";
+    open NODES, "<", "$db_path/taxonomy/nodes.dmp"
+      or die "Can't open nodes file - make sure the Kraken database path is defined correctly. $!\n";
     while (<NODES>) {
       my ($node_id, $parent_id) = split(/\t\|\t/);
       $child_lists->{$parent_id} ||= [];
