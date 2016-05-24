@@ -89,7 +89,7 @@ def process_kmer_distribution(curr_str, lvl_taxids, map2lvl_taxids):
     #Return dictionary 
     return [mapped_taxid, temp_dict]
 
-#process_kraken_repot
+#process_kraken_report
 #usage: parses a single line in the kraken report and extracts relevant information
 #input: kraken report file with the following tab delimited lines 
 #   - percent of total reads   
