@@ -26,7 +26,8 @@ Options:
 ";
 
 GetOptions ("db=s" => \$db_path,
-            "l|read-length=i" => \$read_length, 
+            "l|read-length=i" => \$read_length,
+            "p|threads=i" => \$n_threads,
             "v|version"  => \$opt_version,
             "h|help" => \$opt_help
 ) 
