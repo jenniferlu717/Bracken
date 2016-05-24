@@ -9,23 +9,23 @@ ${KRAKEN_DB}/library directory.
 
 Step 2a: Search all library input sequences against the database
 
-    > kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library -name "*.fna" -o -name "*.fa" -o -name "*.fasta" -exec cat {} + )  > database.kraken
+    kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library -name "*.fna" -o -name "*.fa" -o -name "*.fasta" -exec cat {} + )  > database.kraken
 
 Step 2b: Compute the classifications for each perfect read of ${READ_LENGTH} base pairs from one of the input sequences.
 With ${READ_LENGTH} = 75:
 
-    > perl count-kmer-abundances.pl --db=${KRAKEN_DB} --read-length=75 database.kraken  > database75mers.kraken_cnts
+    perl count-kmer-abundances.pl --db=${KRAKEN_DB} --read-length=75 database.kraken  > database75mers.kraken_cnts
 
 Step 3: Generate the kmer distribution file using the following command line:
     
-    > python generate_kmer_distribution.py -i database75mers.kraken_cnts -o KMER_DISTR.TXT
+    python generate_kmer_distribution.py -i database75mers.kraken_cnts -o KMER_DISTR.TXT
 
 Step 4: Given the expected kmer distribution for genomes in a kraken database along
 with a kraken report file, the number of reads belonging to each species (or
 genus) is estimated using the estimate_abundance.py file, run with the
 following command line:
 
-    > python estimate_abundance.py -i KRAKEN.REPORT -k KMER_DISTR.TXT -l
+    python estimate_abundance.py -i KRAKEN.REPORT -k KMER_DISTR.TXT -l
       CLASSIFICATON_LEVEL -t THRESHOLD -o OUTPUT_FILE.TXT
 
 The following required parameters must be specified:
