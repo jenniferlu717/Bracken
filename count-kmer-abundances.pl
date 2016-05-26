@@ -116,7 +116,7 @@ while (my $line = <>) {
             #    ($max_depth_idx,$current_max_depth,$current_classified_taxid) = (0,0,0);
             #    next;
             #}
-            defined $taxid_depth or die "Couldn't map taxid $taxid (count $count) in line $current_line: $line\n";
+            defined $taxid_depth or die "Couldn't find taxid $taxid in nodes.dmp (count $count) in line $current_line: ".substr($line,0,50)." ...\n";
             
             ## fill up the string if classified_taxids_len < n
             ## if count is greater than zero, overwrite the positions and update the count

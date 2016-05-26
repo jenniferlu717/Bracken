@@ -206,7 +206,8 @@ def main():
         if len(mapped_taxid_dict) == 0:
             continue
         kmer_distr_dict[mapped_taxid] = mapped_taxid_dict
-   
+    k_file.close() 
+
     #For each current parent node, distribute level reads to genomes
     curr_nodes = [root_node]
     while len(curr_nodes) > 0:
@@ -272,7 +273,7 @@ def main():
         new_all_reads = float(all_reads) + float(added_reads)
         sum_all_reads += new_all_reads
 
-    #Print for eachclassification level: 
+    #Print for each classification level: 
     #   - name, taxonomy ID, taxonomy level
     #   - kraken assigned reads, added reads, estimated reads, and fraction total reads 
     o_file = open(args.output, 'w')
@@ -290,6 +291,11 @@ def main():
         o_file.write(str(int(new_all_reads)) + '\t')
         o_file.write("%0.5f\n" % (float(new_all_reads)/float(sum_all_reads)))
     o_file.close()
+
+    #Print modified kraken report 
+    #new_report, extension = os.path.splitext(args.input)
+    #report_file = open(new_report + '_bracken' + extension, 'w')
+    #report_file.close() 
 
 if __name__ == "__main__":
     main()
