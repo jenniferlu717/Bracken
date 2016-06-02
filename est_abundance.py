@@ -281,11 +281,11 @@ def main():
             
             #Determine the number of reads classified by Kraken uniquely for the genome
             #and the fraction of the genome that is unique
-            num_classified_reads = map2lvl_taxids[genome][1]
+            num_classified_reads = float(map2lvl_taxids[genome][1])
             if genome in kmer_distr_dict and genome in kmer_distr_dict[genome]:
                 lvl_fraction = float(kmer_distr_dict[genome][genome][0])
             else:
-                lvl_fraction = 1
+                lvl_fraction = 1.
             #Based on the classified reads and the fraction of unique reads, estimate
             #the true number of reads belonging to this genome in the sample 
             est_genome_reads = num_classified_reads/lvl_fraction
@@ -293,7 +293,10 @@ def main():
             
             #Save values
             probability_dict_prelim[genome] = [fraction, est_genome_reads]
-       
+      
+        if all_genome_reads == 0:
+            continue
+              
         #Get final probabilities
         #P_R_A = probability that a read is classified at the node given that it belongs to genome A
         #P_A = probability that a randomly selected read belongs to genome A
