@@ -349,7 +349,7 @@ def main():
     
     #Print to screen
     print("BRACKEN SUMMARY (Kraken report: %s)" % args.input)
-    print("    >>> Threshold: %i " % args.thresh)
+    print("    >>> Threshold: %i " % int(args.thresh))
     print("    >>> Number of %s in sample: %i " % (abundance_lvl, n_lvl_total))
     print("\t  >> Number of %s with reads > threshold: %i " % (abundance_lvl, n_lvl_est))
     print("\t  >> Number of %s with reads < threshold: %i " % (abundance_lvl, n_lvl_del))
