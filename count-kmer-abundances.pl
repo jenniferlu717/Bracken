@@ -62,8 +62,8 @@ my $n=$read_length-31+1;
 
 my $depth_map = get_taxid_to_rankid();
 $depth_map->{"A"} = 0;
+$depth_map->{0} = 0;
 my $seqid_to_taxid_map = get_seqid_mapping();
-#print STDERR Dumper \$depth_map;
 
 my $current_line = 0;
 my $n_lines = `cat $ARGV[0] | wc -l`;
