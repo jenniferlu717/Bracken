@@ -130,7 +130,7 @@ def process_kraken_report(curr_str):
         else:
             break 
     #Determine which level based on number of spaces
-    level_num = spaces/2
+    level_num = int(spaces/2)
     return [name, taxid, level_num, level_type, all_reads, level_reads]
     
 #Main method 
