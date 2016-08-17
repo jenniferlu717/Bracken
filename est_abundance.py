@@ -1,5 +1,24 @@
 #!/usr/bin/python
+#####################################################################
+#est_abundance.py calculates abundances for a given microbial dataset classified by Kraken
+#Copyright (C) 2016 Jennifer Lu, jlu26@jhmi.edu
 
+#This file is part of Bracken.
+
+#Bracken is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the license, or
+#(at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+#####################################################################
 #Jennifer Lu, jlu26@jhmi.edu
 #02/29/2016
 #
@@ -34,7 +53,8 @@
 #   - main
 #   - process_kmer_distribution  
 #   - process_kraken_report 
-# 
+#
+#####################################################################
 import os, sys, argparse
 import operator
 from time import gmtime

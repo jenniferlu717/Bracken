@@ -73,10 +73,28 @@ Step 3:
 
 Step 4: 
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
+
+=======================
+COPYRIGHT AND LICENSING
+=======================
+Copyright (C) 2016 Jennifer Lu, jlu26@jhmi.edu
+
+Bracken is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the license, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see <http://www.gnu.org/licenses/>.
     
-======================
+==================
 AUTHOR INFORMATION
-======================
+==================
 Jennifer Lu (jlu26@jhmi.edu)
 Florian Breitwieser (fbreitw1@jhu.edu)
 Last Updated On: 08/17/2016
