@@ -1,6 +1,11 @@
 BRACKEN ABUNDANCE ESTIMATION
 =============================
+For Bracken news, updates, and instructions: ccb.jhu.edu/software/bracken/ 
+Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
 
+===========================
+METHODS FOR RUNNING BRACKEN
+===========================
 Step 1: Classify all reads using Kraken (http://ccb.jhu.edu/software/kraken/) and Generate a Kraken report file.   
 
 Three steps are necessary to set up Kraken abundance estimation. It is assumed that
@@ -95,6 +100,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ==================
 AUTHOR INFORMATION
 ==================
-Jennifer Lu (jlu26@jhmi.edu)
-Florian Breitwieser (fbreitw1@jhu.edu)
-Last Updated On: 08/17/2016
+Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
+Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
+Last Updated On: 02/06/2017
