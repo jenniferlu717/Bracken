@@ -1,6 +1,6 @@
 #!/bin/env perl
 #count-kmer-abundance.py counts the kmer abundance for genomes classified by Kraken. 
-#Copyright (C) 2016 Florian P. Breitwieser, fbreitw1@jhu.edu
+#Copyright (C) 2016-2017 Florian P. Breitwieser, fbreitw1@jhu.edu
 
 #This file is part of Bracken.
 
