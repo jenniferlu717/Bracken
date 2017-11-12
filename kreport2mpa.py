@@ -139,7 +139,8 @@ def main():
             if (level_type == "x" and args.x_include) or level_type != "x": 
                 #Print all ancestors of current level followed by |
                 for string in curr_path:
-                    o_file.write(string + "|")
+                    if (string[0] == "x" and args.x_include) or string[0] != "x":
+                        o_file.write(string + "|")
                 #Print final level and then number of reads
                 o_file.write(level_str + "\t" + str(all_reads) + "\n")
             #Update
