@@ -99,6 +99,9 @@ def main():
     parser.add_argument('--intermediate-ranks', action='store_true',
         dest='x_include', default=False, required=False,
         help='Include non-traditional taxonomic ranks in output')
+    parser.add_argument('--no-intermediate-ranks', action='store_false',
+        dest='x_include', default=False, required=False,
+        help='Do not include non-traditional taxonomic ranks in output')
     args=parser.parse_args()
 
     #Process report file and output 
