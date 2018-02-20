@@ -1,0 +1,114 @@
+#!/usr/bin/env perl 
+#####################################################################
+#bracken-build performs all steps/combines programs to generate the kmer distribution
+#file from an already-built Kraken database
+#Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
+#
+#This file is part of Bracken.
+#
+#Bracken is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the license, or 
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+#################################################################### 
+#Jennifer Lu, jlu26@jhmi.edu
+#11/30/2017
+#
+#This program uses a given Kraken database and calls all steps to 
+#generate the necessary kmer distribution file needed to run Bracken 
+#for a given Kraken database 
+#
+#Parameters:
+#   - Kraken database path containing:
+#       - library/
+#       - database.kdb
+#       - database.idx
+#       - taxonomy/nodes.dmp
+#       - taxonomy/names.dmp
+#   - threads [default: 12]
+#   - read length [default: 150]
+
+use strict;
+use warnings;
+use File::Basename;
+use Getopt::Long;
+
+#chmod +x "$KRAKEN_DIR/$(basename $file)"
+
+#Define Program Defaults 
+my $DEF_THREAD_CT = 10;
+my $DEF_READ_LENGTH = 150;
+#Define User-Defined Options
+my $PROG = basename $0;
+
+my (
+    $db,
+    $threads,
+    $length,
+    $kmer_distrib
+);
+
+$threads = $DEF_THREAD_CT;
+$length = $DEF_READ_LENGTH;
+
+GetOptions(
+    "help" => \&display_help,
+    "db=s" => \$db,
+    "read-length=i" => \$length,
+    "threads=i" => \$threads,
+) or usage();
+
+if (@ARGV) {
+    warn "Unrecognized arguments on command line. \n";
+    usage();
+} 
+
+
+if (! defined $db) {
+    die "Must specify database path\n";
+}
+if ($threads <= 0) {
+    die "Can't use nonpositive thread count of $threads\n";
+}
+if ($length <= 0) {
+    die "Can't use nonpositive read length\n"; 
+}
+
+$ENV{"KRAKEN_DB_NAME"} = $db;
+$ENV{"KRAKEN_THREAD_CT"} = $threads;
+$ENV{"READ_LENGTH"} = $length;
+#Run build steps 
+
+
+#End of Main Code
+#usage method
+sub usage {
+    my $exit_code = @_ ? shift : 64;
+    print STDERR <<EOF;
+Usage: $PROG [options]
+Options:
+    --db NAME               Kraken DB path (mandatory except for --help)
+    --threads NUM           Number of threads (def: $DEF_THREAD_CT)
+    --read-length NUM       Read length in bp (determines the size of kmers
+                            each genome is broken into before classifying against
+                            the database. For paired reads, use the length of one 
+                            read from the pair. It is more accurate to use 
+                            lengths > 100bp)
+    --help                  Print this message
+EOF
+    exit $exit_code;
+} 
+
+sub display_help {
+    usage(0);
+}
+
