@@ -3,6 +3,9 @@ For Bracken news, updates, and instructions: ccb.jhu.edu/software/bracken/
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
 
+# Installation
+
+To install simply copy or link the scripts in `src/` to a folder on your PATH.
 # Running Bracken
 ## Step 1: Classify all reads using Kraken and generate a Kraken report file
 Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/

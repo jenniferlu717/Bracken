@@ -1,4 +1,4 @@
-#!/bin/env perl
+#! /usr/bin/env perl
 #count-kmer-abundance.py counts the kmer abundance for genomes classified by Kraken. 
 #Copyright (C) 2016-2017 Florian P. Breitwieser, fbreitw1@jhu.edu
 
