@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 #####################################################################
 #generate_kmer_distribution.py creates the kmer distribution file needed for est_abundance.py
 #Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu

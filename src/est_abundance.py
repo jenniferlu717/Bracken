@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 #####################################################################
 #est_abundance.py calculates abundances for a given microbial dataset classified by Kraken
 #Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
