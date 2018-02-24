@@ -419,7 +419,7 @@ def main():
             new_reads[curr_node.taxid] += add_reads 
     #Print modified kraken report 
     new_report, extension = os.path.splitext(args.input)
-    r_file = open(new_report + '_bracken' + extension, 'w')
+    r_file = open(new_report + '_bracken_' + abundance_lvl + extension, 'w')
     #r_file.write(unclassified_line)
     r_file.write("%0.2f\t" % (float(u_reads)/float(total_reads)*100))
     r_file.write("%i\t" % u_reads)
