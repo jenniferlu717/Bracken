@@ -166,7 +166,7 @@ while (my $line = <>) {
                 $classified_taxids_i -= $n if $classified_taxids_i >= $n;
             }
         }
-		my $str = join("\t", $seqid, $real_taxid, $classified_taxid, $length, join(" ",map{ $_.":".$real_taxid_cnts{$_} } sort {$real_taxid_cnts{$b} <=> $real_taxid_cnts{$a}} keys %real_taxid_cnts) + "\n");
+		my $str = join("\t", $seqid, $real_taxid, $classified_taxid, $length, join(" ",map{ $_.":".$real_taxid_cnts{$_} } sort {$real_taxid_cnts{$b} <=> $real_taxid_cnts{$a}} keys %real_taxid_cnts), "\n");
         print $str;
     } else {
         print "$seqid\tno mapping\t$classified_taxid\t$length\t0\n";
