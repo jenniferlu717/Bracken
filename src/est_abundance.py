@@ -35,7 +35,7 @@
 #
 #Additional Input Parameters to Specify [OPTIONAL]:
 #   - Classification Level to estimate abundances for
-#     [Possible options = K, P, C, O, F, G, S, Default = S]  
+#     [Possible options = D, P, C, O, F, G, S, Default = S]  
 #   - Read Threshold required to give confidence that higher 
 #     classification level reads belong to a given species/strain
 #     [Default = 10]
@@ -165,7 +165,7 @@ def main():
         help='Output modified kraken report file with abundance estimates')
     parser.add_argument('-l', '--level', dest='level', required=False,
         default='S',
-        choices=['K','P','C','O','F','G','S'],
+        choices=['D','P','C','O','F','G','S'],
         help='Level to push all reads to.')
     parser.add_argument('-t', '--thresh','--threshold',dest='thresh', 
         required=False,default=10,
@@ -180,7 +180,7 @@ def main():
 
     #Abundance level
     lvl_dict = {}
-    lvl_dict['K'] = 'kingdoms'
+    lvl_dict['D'] = 'domains'
     lvl_dict['P'] = 'phylums'
     lvl_dict['O'] = 'orders'
     lvl_dict['C'] = 'classes'
