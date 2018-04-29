@@ -7,6 +7,9 @@ Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/article
 
 To install simply copy or link the scripts in `src/` to a folder on your PATH.
 # Running Bracken
+
+If you run Kraken using one of the pre-built MiniKraken databases you can find corresponding Bracken databases [here](https://ccb.jhu.edu/software/bracken/).
+
 ## Step 1: Classify all reads using Kraken and generate a Kraken report file
 Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 
