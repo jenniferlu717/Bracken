@@ -23,6 +23,7 @@ use List::MoreUtils qw/pairwise/;
 use File::Basename;
 use Parallel::ForkManager;
 use Getopt::Long;
+use File::Temp qw/tempdir tempfile/;
 
 my $read_length = 75;
 my $n_threads = 1;
@@ -91,16 +92,19 @@ my ($seqid,$classified_taxid);
 
 ++$|;
 
+## For paralle processing
+my $dir = tempdir( CLEANUP => 1);
+my @temp_files;
+
 my $counti = 0;
 my $countb = 0;
 my $pm = new Parallel::ForkManager($n_threads);
 while (my $line = <>) {
     printf STDERR "\r%3.2f%%; line %10s / %s",(++$current_line/$n_lines*100),$current_line,$n_lines;
-    $pm->start and next; # do the fork
     my (undef,$seqid,$classified_taxid,$length,$classification_string) = split(/\t/, $line);
     defined $classification_string or die "ERROR: $line ?\n";
     if ($length < $read_length) {
-        $pm->finish; next;
+        next;
     }
     my $real_taxid;
     if ($seqid =~ /^kraken:taxid/) {
@@ -113,6 +117,11 @@ while (my $line = <>) {
     }
 
     if (defined $real_taxid) {
+        my $temp_file = $dir."/temp$current_line.txt";
+        if ($n_threads > 1) {
+            push @temp_files, $temp_file;
+        }
+        $pm->start and next; # do the fork
         
         my %real_taxid_cnts;
     
@@ -166,16 +175,34 @@ while (my $line = <>) {
                 $classified_taxids_i -= $n if $classified_taxids_i >= $n;
             }
         }
-		my $str = join("\t", $seqid, $real_taxid, $classified_taxid, $length, join(" ",map{ $_.":".$real_taxid_cnts{$_} } sort {$real_taxid_cnts{$b} <=> $real_taxid_cnts{$a}} keys %real_taxid_cnts), "\n");
-        print $str;
+        my $str = join("\t", $seqid, $real_taxid, $classified_taxid, $length)."\t";
+        foreach my $key (sort {$real_taxid_cnts{$b} <=> $real_taxid_cnts{$a}} keys %real_taxid_cnts) {
+            $str .= $key.":".$real_taxid_cnts{$key};
+        }
+        $str .= "\n";
+        if ($n_threads > 1) {
+            open(my $T, ">", $temp_file) or die "Could not open $temp_file: $!";
+            print $T $str;
+            close($T);
+        } else {
+            print $str;
+        }
+        $pm->finish; # do the exit in the child process
     } else {
         print "$seqid\tno mapping\t$classified_taxid\t$length\t0\n";
     }
-    $pm->finish; # do the exit in the child process
-
 }
-
 $pm->wait_all_children;
+
+if ($n_threads > 1) {
+    foreach my $f (@temp_files) {
+        open(my $F, "<", $f) or die $!;
+        while (<$F>) {
+            print $_;
+        }
+        close($F);
+    }
+}
 
 print STDERR "Done: $counti; $countb.\n";
 
@@ -225,3 +252,5 @@ sub get_rank_depth {
         get_rank_depth($child_lists, $depth_map, $depth+1, $child);
     }
 }
+
+# vim: set softtabstop=4 shiftwidth=4 tabstop=4 expandtab smartindent :
