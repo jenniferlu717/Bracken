@@ -177,7 +177,7 @@ while (my $line = <>) {
         }
         my $str = join("\t", $seqid, $real_taxid, $classified_taxid, $length)."\t";
         foreach my $key (sort {$real_taxid_cnts{$b} <=> $real_taxid_cnts{$a}} keys %real_taxid_cnts) {
-            $str .= $key.":".$real_taxid_cnts{$key};
+            $str .= $key.":".$real_taxid_cnts{$key}." ";
         }
         $str .= "\n";
         if ($n_threads > 1) {
