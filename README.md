@@ -5,7 +5,10 @@ Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/article
 
 # Installation
 
-To install simply copy or link the scripts in `src/` to a folder on your PATH.
+To install:
+1. copy or link the scripts in `src/` to a folder on your PATH.
+2. run the following command: `cd src/ && make`
+
 # Running Bracken
 
 If you run Kraken using one of the pre-built MiniKraken databases you can find corresponding Bracken databases [here](https://ccb.jhu.edu/software/bracken/).
@@ -23,17 +26,19 @@ and all sequences are as `.fna` files in the `${KRAKEN_DB}/library` directory.
     kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library -name "*.fna" -o -name "*.fa" -o -name "*.fasta" -exec cat {} + )  > database.kraken
 
 ### Step 2b: Compute classifications for each perfect read from one of the input sequences
-With `${READ_LENGTH} = 75`:
 
-    perl count-kmer-abundances.pl --db=${KRAKEN_DB} --read-length=75 database.kraken  > database75mers.kraken_cnts
+    src/kmer2read_distr --seqidtaxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy/ --kraken database.kraken --output database${READ_LENGTH}mers.kraken -k ${KMER_LEN} -l ${READ_LENGTH} -t ${THREADS} 
 
 Set `${READ_LENGTH}` to whatever is the most likely perfect read length of your data. 
 E.g., if you are using 100 bp reads, set it to `100`. 
 
+Note:
+Kraken 1.0's default kmer length = 31
+Kraken 2.0's default kmer length = 35
 ## Step 3: Generate the kmer distribution file
 The kmer distribution file is generated using the following command line:
 
-    python generate_kmer_distribution.py -i database75mers.kraken_cnts -o KMER_DISTR.TXT
+    python generate_kmer_distribution.py -i database${READ_LENGTH}mers.kraken -o database${READ_LENGTH}mers.kmer_distrib
 
 ## Step 4: Estimate abundance
 Given the expected kmer distribution for genomes in a kraken database along
@@ -108,4 +113,4 @@ Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
 Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
-Last Updated On: 02/06/2017
+Last Updated On: 09/06/2018
