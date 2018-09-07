@@ -23,7 +23,7 @@ and all sequences are as `.fna` files in the `${KRAKEN_DB}/library` directory.
 ## Step 2: Produce a kmer distribution file for your Kraken database
 ### Step 2a: Search all library input sequences against the database
 
-    kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library -name "*.fna" -o -name "*.fa" -o -name "*.fasta" -exec cat {} + )  > database.kraken
+    kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
 
 ### Step 2b: Compute classifications for each perfect read from one of the input sequences
 
