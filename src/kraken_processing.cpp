@@ -1,3 +1,24 @@
+/*********************************************************************
+ * kraken_processing.cpp is used as part of the kmer2distr script
+ * Copyright (C) 2016-2018 Jennifer Lu, jlu26@jhmi.edu
+ *
+ * This file is part of Bracken.
+ * Bracken is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the license, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/>.*/
+/************************************************************************
+ * Jennifer Lu, jlu26@jhmi.edu
+ * Updated: 2018/09/06
+ */
 #include "kraken_processing.h"
 
 /*METHOD: Evaluate the kraken database file*/
@@ -162,7 +183,7 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
         if (curr_t == 0){
             continue;
         }
-        //Save taxids and sort nodes
+        //Save taxids 
         auto x_it = taxid2kmers.find(curr_t);
         if (x_it == taxid2kmers.end()) {
             //Not found in map
@@ -179,28 +200,18 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
     } else if (count_ts == 1) {
         return save_t; 
     } else {
-        //Iterate through NODES
-        taxonomy * curr_n;
-        int curr_taxid;
+        //MUST MAKE THIS FASTER SOMEHOWWW
+        //can i sort by node numbers? while array has something -- pop if visit.....
+        //Score each taxid -- make faster by ignoring taxids already visited? 
         map<int, int> taxid2scores; 
+        taxonomy * curr_n;
         for (map<int, int>::iterator it=taxid2kmers.begin(); it!=taxid2kmers.end(); ++it){
-            //For this node
+            taxid2scores[it->first] = it->second;
             curr_n = taxid2node->find(it->first)->second;
-            curr_taxid = curr_n->get_taxid();
-            taxid2scores[curr_taxid] += taxid2kmers[curr_taxid];
-            //Iterate through parents of this node 
             while(curr_n->get_parent() != NULL) {
                 curr_n = curr_n->get_parent();
-                if (taxid2scores.find(curr_n->get_taxid()) != taxid2scores.end()) {
-                    //IF THIS WAS ALREADY PARSED
-                    taxid2scores[curr_taxid] += taxid2scores[curr_n->get_taxid()];
-                    taxid2scores.erase(curr_n->get_taxid());
-                    break;  // Don't need to go back up the tree 
-                } else if (taxid2kmers.find(curr_n->get_taxid()) != taxid2kmers.end()) {
-                    //This node has yet to be parsed -- remove from taxid2kmers
-                    taxid2scores[curr_taxid] += taxid2kmers[curr_n->get_taxid()];
-                    //Remove from map
-                    taxid2kmers.erase(curr_n->get_taxid());
+                if (taxid2kmers.find(curr_n->get_taxid()) != taxid2kmers.end()) {
+                    taxid2scores[it->first] += taxid2kmers[curr_n->get_taxid()];
                 }
             }
         }

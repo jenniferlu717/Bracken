@@ -74,7 +74,7 @@ The following sample input and output files are included in the sample_data/ fol
 Due to size constraints, the following files are not included in the sample_data/ folder:
     `sample_test.kraken` - Kraken output file used to generate the Kraken report file
     `database.kraken` - Initial Kraken classification of every genome
-    `database75mers.kraken_cnts` - Counting of kmer abundances
+    `database75mers.kraken` - Counting of kmer abundances
 
 The following commands were used to generate each individual file: 
 
@@ -84,16 +84,16 @@ The following commands were used to generate each individual file:
    ```
 2. ```
     kraken --db=${KRAKEN_DB} --fasta_input --threads=10 <( find -L library -name "*.fna" -o -name "*.fa" -o -name "*.fasta" -exec cat {} + ) > database.kraken 
-    perl count-kmer-abubndances.pl --db=${KRAKEN_DB} --read-length=75 database.kraken > database75mers.kraken_cnts
+    ./kmer2read_distr --seqid2taxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy/ -l 75 -k 31 -t 20 --kraken database.kraken --output database75mers.kraken 
    ```
 3. ```
-    python generate_kmer_distribution.py -i database75mers.kraken_cnts -o sample_kmer_distr_75mers.txt
+    python generate_kmer_distribution.py -i database75mers.kraken -o sample_kmer_distr_75mers.txt
    ```
 4. ```
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2016 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2018 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
