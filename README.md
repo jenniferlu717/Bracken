@@ -78,7 +78,7 @@ Do not run bracken-build with MiniKraken.
 
 ## Step 3: Run Bracken for Abundance Estimation
         
-        bracken --d ${KRAKEN_DB} -i ${SAMPLE}.kreport -o ${SAMPLE}.bracken -r ${READ_LEN} -l ${LEVEL} -t ${THRESHOLD}
+        bracken -d ${KRAKEN_DB} -i ${SAMPLE}.kreport -o ${SAMPLE}.bracken -r ${READ_LEN} -l ${LEVEL} -t ${THRESHOLD}
 
 
 # RUNNING BRACKEN: HARD VERSION
