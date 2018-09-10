@@ -95,8 +95,8 @@ Do not run bracken-build with MiniKraken.
 ### Step 1a: Search all library input sequences against the database
 Run the following scripts WITHIN the Kraken database folder: 
 
-        kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
-        kraken2 --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
+        kraken --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
+        kraken2 --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
 
 ### Step 1b: Compute classifications for each perfect read from one of the input sequences
 
