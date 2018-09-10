@@ -93,7 +93,8 @@ Do not run bracken-build with MiniKraken.
 ## Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
    * It is highly encouraged for users to run the following scripts with 20 threads.
 ### Step 1a: Search all library input sequences against the database
-   * Run the following scripts WITHIN the Kraken database folder: 
+Run the following scripts WITHIN the Kraken database folder: 
+
         kraken --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
         kraken2 --db=${KRAKEN_DB} --fasta-input --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
 
@@ -118,11 +119,11 @@ The kmer distribution file is generated using the following command line:
     
 ## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
 
-   * Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
+Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
         kraken --db ${KRAKEN_DB} --threads ${THREADS} ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken-report --db ${KRAKEN_DB} ${SAMPLE}.kraken > ${SAMPLE}.kreport 
 
-   * Kraken 2.0 requires the addition of the --report flag 
+Kraken 2.0 requires the addition of the --report flag 
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
 ## Step 3: Run Bracken for Abundance Estimation
