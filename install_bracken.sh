@@ -29,7 +29,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
 #Allow build script to be run without sh preceding it 
 chmod +x "bracken-build"
-#chmod +x "bracken"
+chmod +x "bracken"
 
 cd src/ && make
 
