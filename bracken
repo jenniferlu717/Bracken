@@ -1,0 +1,101 @@
+#!/bin/bash
+
+#####################################################################
+#bracken.sh checks that the Bracken files are present and generates the abundance estimation
+#Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
+#
+#This file is part of Bracken.
+#
+#Bracken is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the license, or 
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details
+#
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -eu
+INPUT=""
+OUTPUT=""
+DATABASE=""
+READ_LEN=100
+THRESHOLD=0
+LEVEL="S"
+
+VERSION="2.0"
+while getopts "t:i:o:r:d:l:" OPTION
+    do 
+        case $OPTION in
+            t)
+                THRESHOLD=$OPTARG
+                ;;
+            r)
+                READ_LEN=$OPTARG
+                ;;
+            l)
+                LEVEL=$OPTARG
+                ;;
+            d)
+                DATABASE=$OPTARG
+                ;;
+            i)
+                INPUT=$OPTARG
+                ;;
+            o)
+                OUTPUT=$OPTARG
+                ;;
+            \?)
+                echo "Usage: bracken -d MY_DB -i INPUT -o OUTPUT -r READ_LEN -l LEVEL -t THRESHOLD"
+                echo "  MY_DB          location of Kraken database" 
+                echo "  INPUT          Kraken REPORT file to use for abundance estimation"
+                echo "  OUTPUT         file name for Bracken default output" 
+                echo "  READ_LEN       read length to get all classifications for (default: 100)"
+                echo "  LEVEL          level to estimate abundance at [options: D,P,C,O,F,G,S] (default: S)"
+                echo "  THRESHOLD      number of reads required PRIOR to abundance estimation to perform reestimation (default: 0)"
+                echo
+                exit
+                ;;
+        esac
+    done
+
+if [[ "$DATABASE" =~ "/"$ ]]
+then
+    DATABASE=${DATABASE:0:-1}
+fi
+#Check if Kraken database exists
+echo " >> Checking for Valid Options..."
+if [ -d $DATABASE ] 
+then 
+    #Directory exists, check for databaseXmers.kmer_distrib
+    if [ ! -f $DATABASE/database${READ_LEN}mers.kmer_distrib ] 
+    then
+        echo " ERROR: ${DATABASE}/database${READ_LEN}mers.kmer_distrib does not exist"
+        echo "        Run bracken-build to generate the kmer distribution file." 
+        exit
+    fi
+else 
+    echo " ERROR: Kraken database ${DATABASE} does not exist"
+    exit 
+fi
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+cd $DIR
+echo " >> Running Bracken " 
+#Check to make sure input file exists 
+if [ -f ${INPUT} ]
+then 
+    echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
+    python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+else
+    echo "  ERROR: Input file ${INPUT} does not exist" 
+    echo "         If running kraken v1.0, run kraken-report"
+    echo "         If running kraken v2.0, run kraken2 with the --report flag" 
+    exit
+fi
+echo "  Bracken complete." 
