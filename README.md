@@ -53,6 +53,7 @@ Do not run bracken-build with MiniKraken.
         bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN}
 
    * Otherwise, direct the program using "-x" to the installation/location of the ./kraken or ./kraken2 scripts
+        
         bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN} -x ${KRAKEN_INSTALLATION}
 
             `${KRAKEN_DB}`  = location of the built Kraken 1.0 or Kraken 2.0 database
