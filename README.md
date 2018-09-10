@@ -45,14 +45,15 @@ Do not run bracken-build with MiniKraken.
         * and library sequences `*.fna`, `*.fa`, or `*.fasta` in the `library` directory.
 
 ## Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
-   * It is highly encouraged for users to run the following scripts with 10-20 threads.
+   It is highly encouraged for users to run the following scripts with 10-20 threads.
      [if run single-threaded, kraken/kraken2 and kmer2read_distr will take hours-days]
-   * Please note that the flags for this script are single lettered
+   Please note that the flags for this script are single lettered
       
-   * If Kraken 1.0 or Kraken 2.0 is included in your PATH, run the following
+   If Kraken 1.0 or Kraken 2.0 is included in your PATH, run the following
+        
         bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN}
 
-   * Otherwise, direct the program using "-x" to the installation/location of the ./kraken or ./kraken2 scripts
+   Otherwise, direct the program using "-x" to the installation/location of the ./kraken or ./kraken2 scripts
         
         bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN} -x ${KRAKEN_INSTALLATION}
 
@@ -66,14 +67,17 @@ Do not run bracken-build with MiniKraken.
                                     e.g., if you are using 100 bp reads, set it to `100`. 
 
 ## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
-   * Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
+   Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
+        
         kraken --db ${KRAKEN_DB} --threads ${THREADS} ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken-report --db ${KRAKEN_DB} ${SAMPLE}.kraken > ${SAMPLE}.kreport 
 
-   * Kraken 2.0 requires the addition of the --report flag 
+   Kraken 2.0 requires the addition of the --report flag 
+        
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
 ## Step 3: Run Bracken for Abundance Estimation
+        
         bracken --d ${KRAKEN_DB} -i ${SAMPLE}.kreport -o ${SAMPLE}.bracken -r ${READ_LEN} -l ${LEVEL} -t ${THRESHOLD}
 
 
