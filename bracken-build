@@ -73,7 +73,7 @@ then
 fi
 #Check for Kraken version
 #echo ${KINSTALL}kraken2
-if [ $KINSTALL == "" ]; then
+if [ "$KINSTALL" == "" ]; then
     if hash kraken2 &> /dev/null; then
         KRAKEN="kraken2"
     elif hash kraken &> /dev/null; then
