@@ -113,19 +113,20 @@ void parse_command_line(int argc, char **argv) {
                     taxid_file = taxid_file + "/nodes.dmp";
                 }
                 /*check if file exists*/
-                if (stat(taxid_file.c_str(), &buffer) != 0) {
+                /*if (stat(taxid_file.c_str(), &buffer) != 0) {
                     printf("  %s does not exist",taxid_file.c_str());
                     usage(1);
-                }
+                }*/
                 break;
             case 'a':
                 /*seqid2taxid file*/
                 seqid_file = optarg;
                 /*check if file exists*/
+                /*
                 if (stat(seqid_file.c_str(), &buffer) != 0) {
                     printf("  %s does not exist", seqid_file.c_str());
                     usage(1);
-                }
+                }*/
                 break;
             case 'o':
                 /*Output file name*/
@@ -135,10 +136,11 @@ void parse_command_line(int argc, char **argv) {
                 /*database.kraken file*/
                 kraken_file = optarg;
                 /*check if file exists*/
+                /*
                 if (stat(kraken_file.c_str(), &buffer) != 0) {
                     printf("  %s does not exist", kraken_file.c_str());
                     usage(1);
-                }
+                }*/
                 break;
             case 'l':
                 /*check negative kmer length*/
@@ -190,6 +192,21 @@ void parse_command_line(int argc, char **argv) {
         usage(1);
     } else if (output_file == "") {
         printf("  Must specify --output file!\n");
+        usage(1);
+    }
+    /*check if files exists*/
+    taxid_file = "taxonomy/nodes.dmp";
+    ifstream test1(taxid_file.c_str());
+    ifstream test2(seqid_file.c_str());
+    ifstream test3(kraken_file.c_str());
+    if (!test1.is_open()) {
+        printf("  %s does not exist",taxid_file.c_str());
+        usage(1);
+    } else if (!test2.is_open()) {
+        printf("  %s does not exist",seqid_file.c_str());
+        usage(1);
+    } else if (!test3.is_open()) {
+        printf("  %s does not exist",kraken_file.c_str());
         usage(1);
     }
 }

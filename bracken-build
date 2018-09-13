@@ -142,10 +142,10 @@ fi
 echo "          Finished creating database.kraken [in DB folder]"
 #Generate databaseXmers.kmer_distrib
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-cd $DIR
+#cd $DIR
 echo " >> Creating database${READ_LEN}mers.kmer_distrib " 
-if [ -f src/kmer2read_distr ]; then
-    src/kmer2read_distr --seqid2taxid $DATABASE/seqid2taxid.map --taxonomy $DATABASE/taxonomy/ --kraken $DATABASE/database.kraken --output $DATABASE/database${READ_LEN}mers.kraken -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
+if [ -f $DIR/src/kmer2read_distr ]; then
+    $DIR/src/kmer2read_distr --seqid2taxid $DATABASE/seqid2taxid.map --taxonomy $DATABASE/taxonomy/ --kraken $DATABASE/database.kraken --output $DATABASE/database${READ_LEN}mers.kraken -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
     python src/generate_kmer_distribution.py -i $DATABASE/database${READ_LEN}mers.kraken -o $DATABASE/database${READ_LEN}mers.kmer_distrib
 else
     echo "      ERROR: kmer2read_distr program not found. " 
