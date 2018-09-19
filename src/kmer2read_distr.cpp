@@ -195,7 +195,7 @@ void parse_command_line(int argc, char **argv) {
         usage(1);
     }
     /*check if files exists*/
-    taxid_file = "taxonomy/nodes.dmp";
+    //taxid_file = "taxonomy/nodes.dmp";
     ifstream test1(taxid_file.c_str());
     ifstream test2(seqid_file.c_str());
     ifstream test3(kraken_file.c_str());
