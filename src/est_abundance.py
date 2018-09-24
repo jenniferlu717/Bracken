@@ -207,6 +207,7 @@ def main():
     map2lvl_taxids = {}
     lvl_taxids = {} 
     last_taxid = -1
+    u_reads = 0
     for line in i_file:
         report_vals = process_kraken_report(line)
         if len(report_vals) < 5:
