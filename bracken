@@ -29,7 +29,7 @@ READ_LEN=100
 THRESHOLD=0
 LEVEL="S"
 
-VERSION="2.0"
+VERSION="2.2"
 while getopts "t:i:o:r:d:l:" OPTION
     do 
         case $OPTION in

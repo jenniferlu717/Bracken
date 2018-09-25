@@ -23,7 +23,7 @@
 
 set -e
 
-VERSION="2.0"
+VERSION="2.2"
 #Move to Bracken installation directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
