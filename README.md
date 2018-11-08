@@ -1,5 +1,5 @@
 # Bracken 2.0 abundance estimation
-For Bracken news, updates, and instructions: /ccb.jhu.edu/software/bracken/ 
+For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
 
@@ -100,7 +100,7 @@ Run the following scripts WITHIN the Kraken database folder:
 
 ### Step 1b: Compute classifications for each perfect read from one of the input sequences
 
-        /src/kmer2read_distrib --seqid2taxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy --kraken database.kraken --output database${READ_LEN}mers.kraken
+        /src/kmer2read_distr --seqid2taxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy --kraken database.kraken --output database${READ_LEN}mers.kraken
             -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
             
             `${KRAKEN_DB}`  = location of the built Kraken 1.0 or Kraken 2.0 database
