@@ -63,7 +63,7 @@ def main():
         help='Bracken output files to combine.')
     parser.add_argument('--names', dest='names', 
         default='',required=False,
-        help='Names for each input file - to be used in column headers of output')
+        help='Names for each input file - to be used in column headers of output [separate names with commas]')
     parser.add_argument('-o', '--output', dest='output', required=True,
         help='Name of output file with combined Bracken results.')
     args = parser.parse_args()
@@ -109,7 +109,7 @@ def main():
             if name not in sample_counts:
                 sample_counts[name] = {}
                 sample_counts[name][taxid] = {}
-            elif taxid != sample_counts[name].keys()[0]:
+            elif taxid != list(sample_counts[name].keys())[0]:
                 sys.exit("Taxonomy IDs not matching for species %s: (%s\t%s)" % (name, taxid, sample_counts[name].keys()[0]))
             if len(level) == 0:
                 level = taxlvl 
