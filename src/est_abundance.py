@@ -362,10 +362,10 @@ def main():
         o_file.write(name + '\t')
         o_file.write(taxid + '\t')
         o_file.write(args.level + '\t')
-        o_file.write(str(int(all_reads)) + '\t')
-        o_file.write(str(int(new_all_reads)-int(all_reads))+'\t')
-        o_file.write(str(int(new_all_reads)) + '\t')
-        o_file.write("%0.5f\n" % (float(new_all_reads)/float(sum_all_reads)))
+        o_file.write('%0.0f\t' % all_reads)
+        o_file.write('%0.0f\t' % (new_all_reads - all_reads))
+        o_file.write('%0.0f\t' % new_all_reads)
+        o_file.write('%0.5f\n' % (float(new_all_reads) / float(sum_all_reads)))
     o_file.close()
     
     #Print to screen
@@ -423,8 +423,8 @@ def main():
     r_file = open(new_report + '_bracken' + extension, 'w')
     #r_file.write(unclassified_line)
     r_file.write("%0.2f\t" % (float(u_reads)/float(total_reads)*100))
-    r_file.write("%i\t" % u_reads)
-    r_file.write("%i\t" % u_reads)
+    r_file.write("%0.0f\t" % u_reads)
+    r_file.write("%0.0f\t" % u_reads)
     r_file.write("U\t0\tunclassified\n")
     #For each current parent node, print to file 
     curr_nodes = [root_node]
@@ -446,9 +446,9 @@ def main():
         #Print information for this level
         new_all_reads = new_reads[curr_node.taxid]
         r_file.write("%0.2f\t" % (float(new_all_reads)/float(total_reads)*100))
-        r_file.write("%i\t" % (new_all_reads))
+        r_file.write("%0.0f\t" % new_all_reads)
         if children == 0:
-            r_file.write("%i\t" % (new_all_reads))
+            r_file.write("%0.0f\t" % new_all_reads)
         else:
             r_file.write("0\t")
         r_file.write(curr_node.level_id + "\t")
