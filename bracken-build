@@ -151,7 +151,7 @@ if [ -f $DIR/src/kmer2read_distr ]; then
 elif [ -f $(command -v kmer2read_distr) ]; then
     kmer2read_distr --seqid2taxid $DATABASE/seqid2taxid.map --taxonomy $DATABASE/taxonomy/ --kraken $DATABASE/database.kraken --output $DATABASE/database${READ_LEN}mers.kraken -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
     if [ -f $(command -v generate_kmer_distribution.py) ]; then
-        python $DIR/src/generate_kmer_distribution.py -i $DATABASE/database${READ_LEN}mers.kraken -o $DATABASE/database${READ_LEN}mers.kmer_distrib
+        python $(command -v generate_kmer_distribution.py) -i $DATABASE/database${READ_LEN}mers.kraken -o $DATABASE/database${READ_LEN}mers.kmer_distrib
     else
         echo "      ERROR: generate_kmer_distribution.py script not found. "
         echo "          Run 'sh install_bracken.sh' to generate the kmer2read_distr script."
