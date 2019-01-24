@@ -165,7 +165,7 @@ def main():
         help='Output modified kraken report file with abundance estimates')
     parser.add_argument('-l', '--level', dest='level', required=False,
         default='S',
-        choices=['D','P','C','O','F','G','S'],
+        choices=['D','P','C','O','F','G','G1','S'],
         help='Level to push all reads to.')
     parser.add_argument('-t', '--thresh','--threshold',dest='thresh', 
         required=False,default=10,
@@ -186,13 +186,14 @@ def main():
     lvl_dict['C'] = 'classes'
     lvl_dict['F'] = 'families'
     lvl_dict['G'] = 'genuses' 
+    lvl_dict['G1'] = 'speciesgroup'
     lvl_dict['S'] = 'species'
     abundance_lvl = lvl_dict[args.level]
 
     #Initialize variables
     root_node = -1
     prev_node = -1
-    main_lvls = ['R','K','D','P','C','O','F','G','S']
+    main_lvls = ['R','K','D','P','C','O','F','G','G1','S']
     total_reads = 0
     kept_reads = 0
     ignored_reads = 0
