@@ -152,9 +152,14 @@ The following optional parameters may be specified:
     If another classification level is specified, thresholding will occur at
     that level.  
 
+# Output Kraken-Style Bracken Report
+
 By default, this script will also recreate the report file using the new Bracken numbers. 
-The new report file will be found in the same folder as the original report file, with "bracken"
-included in the name.
+ 1. The new report file will be found in the same folder as the original report file, with "bracken" included in the name.
+ 2. Levels below the estimate-level will not be printed. 
+ 3. Any levels whose reads were below the threshold will not be included
+ 4. Percentages will be re-calculated for the remaining levels
+ 5. Unclassified reads will not be included in the report.  
 
 # Example abundance estimation
 The following sample input and output files are included in the sample_data/ folder: 
