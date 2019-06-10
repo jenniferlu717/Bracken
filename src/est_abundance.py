@@ -231,7 +231,7 @@ def main():
         while level_num != (prev_node.level_num + 1):
             prev_node = prev_node.parent
         #Determine correct level ID
-        if level_id == '-':
+        if level_id == '-' or len(level_id)> 1:
             if prev_node.level_id in main_lvls:
                 level_id = prev_node.level_id + '1'
             else:
@@ -289,6 +289,7 @@ def main():
         if curr_node.lvl_reads == 0:
             continue 
         if curr_node.taxid not in kmer_distr_dict:
+            #print curr_node.name
             nondistributed_reads += curr_node.lvl_reads
             continue
         #Get the dictionary listing all genomes mapping to this node
@@ -386,46 +387,52 @@ def main():
     
     ###########################################################################
     #Kraken-Style Report Section added 05/26/2016
+    #FIXED 2019/06/10
     #Jennifer Lu, jlu26 
     #For each child node, add reads to all parents 
     new_reads = {}
-    test_reads = 0
+    total_reads = 0
     for curr_leaf in leaf_nodes:
         #Move to estimation level
         curr_node = curr_leaf
-        if args.level in curr_node.level_id:
-            while args.level != curr_node.level_id:
-                curr_node = curr_node.parent
-        #Determine number of reads to add
-        add_reads = curr_node.all_reads
+        skip = False
+        while args.level != curr_node.level_id:
+            if curr_node.parent == None:
+                skip = True
+                break
+            curr_node = curr_node.parent
+        if skip: continue 
+        #Determine number of reads to add OR skip 
         if curr_node.taxid in lvl_taxids:
             [name, all_reads, lvl_reads, added_reads] = lvl_taxids[curr_node.taxid]
-            add_reads += added_reads
+            new_total = added_reads + all_reads 
+        else: 
+            continue 
         #If this level tree already traversed, do not traverse
         if curr_node.taxid in new_reads:
             continue
         #Save reads for this node
-        new_reads[curr_node.taxid] = add_reads
-        test_reads += add_reads 
+        new_reads[curr_node.taxid] = new_total
+        total_reads += new_total 
         #Traverse tree 
         while curr_node.parent is not None:
             #Move to parent
             curr_node = curr_node.parent
             #Add to dictionary if not previously found
             if curr_node.taxid not in new_reads:
-                if curr_node.taxid not in kmer_distr_dict:
-                    add_reads += curr_node.lvl_reads
                 new_reads[curr_node.taxid] = 0
+                curr_node.all_reads = 0
             #Add reads
-            new_reads[curr_node.taxid] += add_reads 
+            new_reads[curr_node.taxid] += new_total 
+            curr_node.all_reads += new_total
     #Print modified kraken report 
     new_report, extension = os.path.splitext(args.input)
     r_file = open(new_report + '_bracken' + extension, 'w')
     #r_file.write(unclassified_line)
-    r_file.write("%0.2f\t" % (float(u_reads)/float(total_reads)*100))
-    r_file.write("%i\t" % u_reads)
-    r_file.write("%i\t" % u_reads)
-    r_file.write("U\t0\tunclassified\n")
+    #r_file.write("%0.2f\t" % (float(u_reads)/float(total_reads)*100))
+    #r_file.write("%i\t" % u_reads)
+    #r_file.write("%i\t" % u_reads)
+    #r_file.write("U\t0\tunclassified\n")
     #For each current parent node, print to file 
     curr_nodes = [root_node]
     while len(curr_nodes) > 0:
@@ -442,18 +449,18 @@ def main():
         if curr_node.taxid in lvl_taxids:
             [name, all_reads, lvl_reads, added_reads] = lvl_taxids[curr_node.taxid]
             new_all_reads = float(all_reads) + float(added_reads)
-       
         #Print information for this level
-        new_all_reads = new_reads[curr_node.taxid]
-        r_file.write("%0.2f\t" % (float(new_all_reads)/float(total_reads)*100))
-        r_file.write("%i\t" % (new_all_reads))
-        if children == 0:
+        if curr_node.taxid in new_reads:
+            new_all_reads = new_reads[curr_node.taxid]
+            r_file.write("%0.2f\t" % (float(new_all_reads)/float(sum_all_reads)*100))
             r_file.write("%i\t" % (new_all_reads))
-        else:
-            r_file.write("0\t")
-        r_file.write(curr_node.level_id + "\t")
-        r_file.write(curr_node.taxid + "\t")
-        r_file.write(" "*curr_node.level_num*2 + curr_node.name + "\n")
+            if children == 0:
+                r_file.write("%i\t" % (new_all_reads))
+            else:
+                r_file.write("0\t")
+            r_file.write(curr_node.level_id + "\t")
+            r_file.write(curr_node.taxid + "\t")
+            r_file.write(" "*curr_node.level_num*2 + curr_node.name + "\n")
     r_file.close() 
     ###########################################################################
 

@@ -96,6 +96,11 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
     int i;
     #pragma omp parallel for
     for(i = 1; i <= s_count; i++) {
+        #pragma omp critical
+        {
+            cerr << "\r\t\t" << seqs_read << " sequences converted...(up next: ";
+            cerr << id2seqid->find(i)->second << ")";
+        }
         //Get values to parse here
         string curr_ks = id2kmers->find(i)->second;
         //Saving values 
@@ -159,7 +164,7 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
         seqs_read += 1;
         #pragma omp critical
         {
-            cerr << "\r\t\t" << seqs_read << " sequences converted...";
+            //cerr << "\r\t\t" << seqs_read << " sequences converted...";
             print_distribution(o_file, id2seqid->find(i)->second, id2taxid->find(i)->second, id2tandl->find(i)->second, taxids_mapped);
         }
     }
