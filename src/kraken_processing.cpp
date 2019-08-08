@@ -94,12 +94,18 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
     printf("\t\t%imers, with a database built using %imers\n",read_len, kmer_len);
     cerr << "\t\t" << seqs_read << " sequences converted...";
     int i;
+    //Outstream 
+    ofstream outfile;
+    //Open file to append
+    outfile.open(o_file, ofstream::app);
     #pragma omp parallel for
     for(i = 1; i <= s_count; i++) {
+        if(i % 1000 == 0) {
         #pragma omp critical
         {
             cerr << "\r\t\t" << seqs_read << " sequences converted...(up next: ";
             cerr << id2seqid->find(i)->second << ")";
+        }
         }
         //Get values to parse here
         string curr_ks = id2kmers->find(i)->second;
@@ -164,8 +170,16 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
         seqs_read += 1;
         #pragma omp critical
         {
-            //cerr << "\r\t\t" << seqs_read << " sequences converted...";
-            print_distribution(o_file, id2seqid->find(i)->second, id2taxid->find(i)->second, id2tandl->find(i)->second, taxids_mapped);
+            //Print read information
+            outfile << id2seqid->find(i)->second << "\t"; 
+            outfile << id2taxid->find(i)->second << "\t"; 
+            outfile << id2tandl->find(i)->second << "\t"; 
+            //Print distributions
+            for (map<int, int>::iterator it=taxids_mapped.begin(); it!=taxids_mapped.end(); ++it){
+                outfile << it->first << ":" << it->second << " ";
+            }
+            outfile << "\n";
+            //print_distribution(o_file, id2seqid->find(i)->second, id2taxid->find(i)->second, id2tandl->find(i)->second, taxids_mapped);
         }
     }
     cerr << "\r\t\t" << seqs_read << " sequences converted...\n";
