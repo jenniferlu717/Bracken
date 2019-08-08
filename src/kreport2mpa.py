@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 ####################################################################
 #kreport2mpa.py converts a Kraken-style report into mpa [MetaPhlAn) format
-#Copyright (C) 2017-2018 Jennifer Lu, jlu26@jhmi.edu
+#Copyright (C) 2017-2019 Jennifer Lu, jlu26@jhmi.edu
 
 #This file is part of Bracken.
 #Bracken is free software; you can redistribute it and/or modify

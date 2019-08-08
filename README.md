@@ -1,4 +1,4 @@
-# Bracken 2.0 abundance estimation
+# Bracken 2.5 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
@@ -17,6 +17,12 @@ Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 ## Hard Bracken Installation:
     cd src/ && make
     Add bracken/bracken-build and scripts in src/ to your PATH 
+
+# Bracken 2.5 Changes
+Bracken 2.5 has a 30x faster build-time. Previously, 1 million 
+database sequences would take hours to process by Bracken. Now, 
+the same process requires less than 10 minutes (with 16 threads).
+All output is identical to previous output. 
 
 # Bracken 2.0 Changes
 Bracken 2.0 does not introduce any changes in the main algorithm. 
@@ -190,7 +196,7 @@ The following commands were used to generate each individual file:
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2018 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2019 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -210,4 +216,4 @@ Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
 Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
-Last Updated On: 09/06/2018
+Last Updated On: 08/07/2019

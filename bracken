@@ -2,7 +2,7 @@
 
 #####################################################################
 #bracken.sh checks that the Bracken files are present and generates the abundance estimation
-#Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
+#Copyright (C) 2016-2019 Jennifer Lu, jlu26@jhmi.edu
 #
 #This file is part of Bracken.
 #
@@ -29,7 +29,7 @@ READ_LEN=100
 THRESHOLD=0
 LEVEL="S"
 
-VERSION="2.2"
+VERSION="2.5"
 while getopts "t:i:o:r:d:l:" OPTION
     do 
         case $OPTION in

@@ -1,6 +1,6 @@
 /*********************************************************************
  * kraken_processing.cpp is used as part of the kmer2distr script
- * Copyright (C) 2016-2018 Jennifer Lu, jlu26@jhmi.edu
+ * Copyright (C) 2016-2019 Jennifer Lu, jlu26@jhmi.edu
  *
  * This file is part of Bracken.
  * Bracken is free software; you can redistribute it and/or modify
