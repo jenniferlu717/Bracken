@@ -30,24 +30,20 @@ void evaluate_kfile(string k_file, string o_file, const taxonomy *my_taxonomy, c
     map<int, string> id2kmers;
     map<int, int> id2taxid;
     map<int, string> id2seqid;
-    map<int, string> id2tandl;
-    int num_reads = read_kfile(k_file, &seqid2taxid, &id2seqid, &id2kmers, &id2taxid, &id2tandl);
+    int num_reads = read_kfile(k_file, &seqid2taxid, &id2seqid, &id2kmers, &id2taxid);
     /*For each seqid, in parallel, convert kmer distribution to read distribution*/
-    convert_distribution(o_file, num_reads, &id2seqid, &id2kmers, &id2taxid, &id2tandl, my_taxonomy, taxid2node, kmer_len, read_len);
+    convert_distribution(o_file, num_reads, &id2seqid, &id2kmers, &id2taxid, my_taxonomy, taxid2node, kmer_len, read_len);
 }
 /***************************************************************************************/
 /*METHOD: READ THE FILE AND SAVE THE SEQID TO KMERS AND TAXID*/
-int read_kfile(string k_file, const map<string, int> *seqid2taxid, map<int, string> *id2seqid, map<int, string> *id2kmers, map<int, int> *id2taxid, map<int, string> *id2tandl)
-{
+int read_kfile(string k_file, const map<string, int> *seqid2taxid, map<int, string> *id2seqid, map<int, string> *id2kmers, map<int, int> *id2taxid){
     /*Initialize Variables*/
     int s_count = 0;
     int curr_taxid; 
     int pos1, pos2, pos3, pos4, pos5;
-    string line; 
+    string line;
     string curr_seqid;
     string curr_kmers;
-    string curr_ataxid, curr_len; 
-    string ataxid_length;
     /*Read through the file*/ 
     ifstream krakenfile (k_file);
     if (krakenfile.is_open()){
@@ -65,16 +61,12 @@ int read_kfile(string k_file, const map<string, int> *seqid2taxid, map<int, stri
             pos5 = line.find("\n", pos4+1);
             //Extract seqid and taxid 
             curr_seqid = line.substr(pos1+1, pos2-pos1-1);
-            curr_ataxid = line.substr(pos2+1, pos3-pos2-1);
-            curr_len = line.substr(pos3+1, pos4-pos3-1);
             curr_kmers = line.substr(pos4+1, pos5-pos4-1);
             curr_taxid = seqid2taxid->find(curr_seqid)->second;
-            ataxid_length = curr_ataxid + "\t" + curr_len; 
             //Save in maps
             id2seqid->insert(std::pair<int, string>(s_count, curr_seqid)); 
             id2kmers->insert(std::pair<int, string>(s_count,curr_kmers)); 
             id2taxid->insert(std::pair<int, int>(s_count, curr_taxid));
-            id2tandl->insert(std::pair<int, string>(s_count, ataxid_length));
         }
         printf("\r\t\t%i total sequences read\n", s_count);
     } else {
@@ -85,7 +77,7 @@ int read_kfile(string k_file, const map<string, int> *seqid2taxid, map<int, stri
 }
 /***************************************************************************************/
 /*METHOD: CONVERT DISTRIBUTIONS INTO READ MAPPINGS - SEND TO PRINT*/
-void convert_distribution(string o_file, int s_count, const map<int, string> *id2seqid, const map<int, string> *id2kmers, const map<int, int> *id2taxid, const map<int, string> *id2tandl, const taxonomy *my_taxonomy, const map<int, taxonomy *> *taxid2node, const int kmer_len, const int read_len){
+void convert_distribution(string o_file, int s_count, const map<int, string> *id2seqid, const map<int, string> *id2kmers, const map<int, int> *id2taxid, const taxonomy *my_taxonomy, const map<int, taxonomy *> *taxid2node, const int kmer_len, const int read_len){
     /*Initialize variables for getting read mappings instead of kmer mappings */
     int n_kmers = read_len - kmer_len + 1;
     int seqs_read = 0;
@@ -173,13 +165,12 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
             //Print read information
             outfile << id2seqid->find(i)->second << "\t"; 
             outfile << id2taxid->find(i)->second << "\t"; 
-            outfile << id2tandl->find(i)->second << "\t"; 
+            outfile << "" << "\t"; 
             //Print distributions
             for (map<int, int>::iterator it=taxids_mapped.begin(); it!=taxids_mapped.end(); ++it){
                 outfile << it->first << ":" << it->second << " ";
             }
             outfile << "\n";
-            //print_distribution(o_file, id2seqid->find(i)->second, id2taxid->find(i)->second, id2tandl->find(i)->second, taxids_mapped);
         }
     }
     cerr << "\r\t\t" << seqs_read << " sequences converted...\n";
@@ -263,22 +254,5 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
         }
         return max_taxid;
     }
-}
-/***************************************************************************************/
-/*METHOD - PRINT DISTRIBUTION*/ 
-void print_distribution(string o_file, const string seqid, const int taxid, string ataxid_length, map<int, int> distribs){
-    //Outstream 
-    ofstream outfile;
-    //Open file to append
-    outfile.open(o_file, ofstream::app);
-    //Print read information
-    outfile << seqid << "\t"; 
-    outfile << taxid << "\t"; 
-    outfile << ataxid_length << "\t"; 
-    //Print distributions
-    for (map<int, int>::iterator it=distribs.begin(); it!=distribs.end(); ++it){
-        outfile << it->first << ":" << it->second << " ";
-    }
-    outfile << "\n";
 }
 
