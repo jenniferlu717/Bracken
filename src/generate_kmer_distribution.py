@@ -62,14 +62,14 @@ from time import strftime
 def parse_single_genome(curr_str):
     split_str = curr_str.strip().split('\t')
     #Error check for only one value in the line 
-    if len(split_str) < 5:
+    if len(split_str) < 4:
         return [0,0,0]
     #Get the genome taxonomy ID tested
-    genome_taxid = split_str[1]
+    genome_taxid = split_str[0]
     #Get which taxonomy ID this read length kmer mapped to
     mapped_id_kmers = {}
     total_kmers = 0
-    kmer_distr = split_str[4]
+    kmer_distr = split_str[3]
     for kmers in kmer_distr.split():
         #Error check for no mapping/incorrect input file format
         if len(kmers.split(':')) == 1:
@@ -92,7 +92,7 @@ def parse_single_genome(curr_str):
 def main():
     #Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True,
+    parser.add_argument('-i', '--input', dest='in_file', required=True,
         help='Kraken counts file for each genome mapped to the overall database.')
     parser.add_argument('-o', '--output', dest='output', required=True,
         help='Output file containing each classified taxonomy ID and the \
@@ -107,7 +107,7 @@ def main():
     genome_dict = {}
     genome_dict_totalkmers = {}
     num_genomes = 0
-    i_file = open(args.input, 'r')
+    i_file = open(args.in_file, 'r')
     for line in i_file:
         [genome_taxid, total_kmers, mapped_taxids_kmers] = parse_single_genome(line)
         #No classification - ignore  
