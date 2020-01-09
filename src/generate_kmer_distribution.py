@@ -65,7 +65,7 @@ def parse_single_genome(curr_str):
     if len(split_str) < 4:
         return [0,0,0]
     #Get the genome taxonomy ID tested
-    genome_taxid = split_str[0]
+    genome_taxid = split_str[1]
     #Get which taxonomy ID this read length kmer mapped to
     mapped_id_kmers = {}
     total_kmers = 0
