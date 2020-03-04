@@ -167,6 +167,10 @@ def main():
         default='S',
         choices=['D','P','C','O','F','G','S'],
         help='Level to push all reads to.')
+    parser.add_argument('--out-report', dest='report_new', required=False,
+        default='',
+        help='Name of new kraken report [default: same as input report with \
+        _bracken added to filename]')
     parser.add_argument('-t', '--thresh','--threshold',dest='thresh', 
         required=False,default=10,
         help='Threshold for the minimum number of reads kraken must assign\
@@ -427,7 +431,11 @@ def main():
             curr_node.all_reads += new_total
     #Print modified kraken report 
     new_report, extension = os.path.splitext(args.input)
-    r_file = open(new_report + '_bracken' + extension, 'w')
+    r_file = ''
+    if args.report_new == '':
+        r_file = open(new_report + '_bracken' + extension, 'w')
+    else:
+        r_file = open(args.report_new, 'w')
     #r_file.write(unclassified_line)
     #r_file.write("%0.2f\t" % (float(u_reads)/float(total_reads)*100))
     #r_file.write("%i\t" % u_reads)

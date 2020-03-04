@@ -24,6 +24,7 @@
 set -eu
 INPUT=""
 OUTPUT=""
+OUTREPORT=""
 DATABASE=""
 READ_LEN=100
 THRESHOLD=0
@@ -51,11 +52,14 @@ while getopts "t:i:o:r:d:l:" OPTION
             o)
                 OUTPUT=$OPTARG
                 ;;
+            w) 
+                OUTREPORT=$OPTARG
             \?)
-                echo "Usage: bracken -d MY_DB -i INPUT -o OUTPUT -r READ_LEN -l LEVEL -t THRESHOLD"
+                echo "Usage: bracken -d MY_DB -i INPUT -o OUTPUT -w OUTREPORT -r READ_LEN -l LEVEL -t THRESHOLD"
                 echo "  MY_DB          location of Kraken database" 
                 echo "  INPUT          Kraken REPORT file to use for abundance estimation"
                 echo "  OUTPUT         file name for Bracken default output" 
+                echo "  OUTREPORT      New Kraken REPORT output file with Bracken read estimates"
                 echo "  READ_LEN       read length to get all classifications for (default: 100)"
                 echo "  LEVEL          level to estimate abundance at [options: D,P,C,O,F,G,S] (default: S)"
                 echo "  THRESHOLD      number of reads required PRIOR to abundance estimation to perform reestimation (default: 0)"
@@ -91,7 +95,7 @@ echo " >> Running Bracken "
 if [ -f ${INPUT} ]
 then 
     echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
-    python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+    python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -w ${OUTREPORT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
 else
     echo "  ERROR: Input file ${INPUT} does not exist" 
     echo "         If running kraken v1.0, run kraken-report"
