@@ -31,7 +31,7 @@ THRESHOLD=0
 LEVEL="S"
 
 VERSION="2.5"
-while getopts "t:i:o:r:d:l:" OPTION
+while getopts "t:i:o:r:d:w:l:" OPTION
     do 
         case $OPTION in
             t)
@@ -54,6 +54,7 @@ while getopts "t:i:o:r:d:l:" OPTION
                 ;;
             w) 
                 OUTREPORT=$OPTARG
+                ;;
             \?)
                 echo "Usage: bracken -d MY_DB -i INPUT -o OUTPUT -w OUTREPORT -r READ_LEN -l LEVEL -t THRESHOLD"
                 echo "  MY_DB          location of Kraken database" 
@@ -95,7 +96,7 @@ echo " >> Running Bracken "
 if [ -f ${INPUT} ]
 then 
     echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
-    python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -w ${OUTREPORT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+    python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} --out-report ${OUTREPORT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
 else
     echo "  ERROR: Input file ${INPUT} does not exist" 
     echo "         If running kraken v1.0, run kraken-report"
