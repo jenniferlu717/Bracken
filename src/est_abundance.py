@@ -165,8 +165,8 @@ def main():
         help='Output modified kraken report file with abundance estimates')
     parser.add_argument('-l', '--level', dest='level', required=False,
         default='S',
-        choices=['D','P','C','O','F','G','S'],
-        help='Level to push all reads to.')
+        #choices=['D','P','C','O','F','G','S'],
+        help='Level to push all reads to [default: S].')
     parser.add_argument('--out-report', dest='report_new', required=False,
         default='',
         help='Name of new kraken report [default: same as input report with \
@@ -191,12 +191,18 @@ def main():
     lvl_dict['F'] = 'families'
     lvl_dict['G'] = 'genuses' 
     lvl_dict['S'] = 'species'
-    abundance_lvl = lvl_dict[args.level]
+    abundance_lvl = args.level
+    if args.level in lvl_dict:
+        abundance_lvl = lvl_dict[args.level]
+    branch = 0
+    if len(args.level) > 1:
+        branch = int(args.level[1:])
 
     #Initialize variables
     root_node = -1
     prev_node = -1
     main_lvls = ['R','K','D','P','C','O','F','G','S']
+    branch_lvl = main_lvls.index(args.level[0])
     total_reads = 0
     kept_reads = 0
     ignored_reads = 0
@@ -235,11 +241,14 @@ def main():
         while level_num != (prev_node.level_num + 1):
             prev_node = prev_node.parent
         #Determine correct level ID
+        test_branch = 0
         if level_id == '-' or len(level_id)> 1:
             if prev_node.level_id in main_lvls:
                 level_id = prev_node.level_id + '1'
+                test_branch = 1
             else:
                 num = int(prev_node.level_id[-1]) + 1
+                test_branch = num
                 level_id = prev_node.level_id[:-1] + str(num)
         #Desired level for abundance estimation or below
         if level_id == args.level:
@@ -256,7 +265,10 @@ def main():
                 lvl_taxids[taxid] = [name, all_reads, level_reads, 0]
                 last_taxid = taxid
                 map2lvl_taxids[taxid] = [taxid, all_reads, 0]
-        elif main_lvls.index(level_id[0]) >= main_lvls.index(args.level):
+        elif (branch > 0 and test_branch > branch):
+            if last_taxid != -1:
+                map2lvl_taxids[taxid] = [last_taxid, all_reads,0]
+        elif main_lvls.index(level_id[0]) >= branch_lvl:
             #For all nodes below the desired level 
             if last_taxid != -1:
                 map2lvl_taxids[taxid] = [last_taxid, all_reads,0]
