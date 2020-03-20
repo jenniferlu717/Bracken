@@ -274,7 +274,7 @@ void construct_taxonomy(const string t_file, taxonomy *my_taxonomy) {
             curr_parent = atoi(line.substr(pos1+3, pos2-pos1-3).c_str()); 
             rank = line.substr(pos2+3, pos3-pos2-3); 
             //Set Node information
-            if (n_count == 1){
+            if (curr_taxid == 1) {
                 curr_node = new taxonomy(curr_taxid, rank);
                 my_taxonomy = curr_node;
                 curr_node->set_lvl_num(1);

@@ -92,7 +92,7 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
     outfile.open(o_file, ofstream::app);
     #pragma omp parallel for
     for(i = 1; i <= s_count; i++) {
-        if(i % 1000 == 0) {
+        if(i % 10 == 0) {
         #pragma omp critical
         {
             cerr << "\r\t\t" << seqs_read << " sequences converted...(up next: ";
@@ -134,7 +134,10 @@ void convert_distribution(string o_file, int s_count, const map<int, string> *id
         int mapped_taxid;
         int prev_kmer, next_kmer; 
         int prev_taxid; 
+        //cerr << "\n";
+        //cerr << count_kmers << "\t";
         for (int k = 0; k < count_kmers; k++) {
+            //cerr << "\t " << k;
             next_kmer = all_kmers[k];
             curr_kmers.push_back(next_kmer);
             if (curr_kmers.size() == n_kmers) {
