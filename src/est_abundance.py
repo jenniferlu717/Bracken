@@ -445,7 +445,7 @@ def main():
     new_report, extension = os.path.splitext(args.input)
     r_file = ''
     if args.report_new == '':
-        r_file = open(new_report + '_bracken' + extension, 'w')
+        r_file = open(new_report + '_bracken_' + abundance_lvl + extension , 'w')
     else:
         r_file = open(args.report_new, 'w')
     #r_file.write(unclassified_line)
