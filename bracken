@@ -95,8 +95,14 @@ echo " >> Running Bracken "
 #Check to make sure input file exists 
 if [ -f ${INPUT} ]
 then 
-    echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
-    python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} --out-report ${OUTREPORT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+    if [ ${OUTREPORT} == ""] 
+    then
+        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
+        python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+    else
+        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
+        python $DIR/src/est_abundance.py -i ${INPUT} -o ${OUTPUT} --out-report ${OUTREPORT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}
+    fi
 else
     echo "  ERROR: Input file ${INPUT} does not exist" 
     echo "         If running kraken v1.0, run kraken-report"
