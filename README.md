@@ -1,10 +1,10 @@
-# Bracken 2.5 abundance estimation
+# Bracken 2.5.3 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
 
 # Installation
-Bracken is a companion program to Kraken 1.0 or Kraken 2.0. 
+Bracken is a companion program to Kraken 1 or Kraken 2
 While Kraken classifies reads to multiple levels in the taxonomic tree, 
 Bracken allows estimation of abundance at a single level using those classifications
 (e.g. Bracken can estimate abundance of species within a sample). 
@@ -17,6 +17,12 @@ Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 ## Hard Bracken Installation:
     cd src/ && make
     Add bracken/bracken-build and scripts in src/ to your PATH 
+
+# Bracken 2.5.3 Changes
+Bracken 2.5.3 has small changes in options to allow for 
+non-traditional abundance estimation (e.g. S1, G1, K7) and 
+allows specification for naming the kraken-style report 
+with bracken read counts. 
 
 # Bracken 2.5 Changes
 Bracken 2.5 has a 30x faster build-time. Previously, 1 million 
@@ -196,7 +202,7 @@ The following commands were used to generate each individual file:
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2019 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2020 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -216,4 +222,4 @@ Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
 Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
-Last Updated On: 08/07/2019
+Last Updated On: 03/26/2020

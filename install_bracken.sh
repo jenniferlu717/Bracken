@@ -2,7 +2,7 @@
 
 #####################################################################
 #install_bracken.sh checks for all dependencies
-#Copyright (C) 2016-2019 Jennifer Lu, jlu26@jhmi.edu
+#Copyright (C) 2016-2020 Jennifer Lu, jlu26@jhmi.edu
 #
 #This file is part of Bracken.
 #
@@ -23,7 +23,7 @@
 
 set -e
 
-VERSION="2.2"
+VERSION="2.5.3"
 #Move to Bracken installation directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
@@ -34,4 +34,3 @@ chmod +x "bracken"
 cd src/ && make
 
 echo "Bracken installation complete." 
-#echo "      (Bracken_v2.0 requires kraken2 to be installed)"
