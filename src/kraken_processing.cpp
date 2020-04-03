@@ -17,166 +17,161 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.*/
 /************************************************************************
  * Jennifer Lu, jlu26@jhmi.edu
- * Updated: 2018/09/06
+ * Updated: 2020/03/31
  */
 #include "kraken_processing.h"
 
 /*METHOD: Evaluate the kraken database file*/
 void evaluate_kfile(string k_file, string o_file, const taxonomy *my_taxonomy, const map<int, taxonomy *> *taxid2node, const map<string, int> seqid2taxid, const int kmer_len, const int read_len){
-    /*Read the file and get maps:
-     * map of number seqid to the kmer distribution  
-     * map of number seqid to taxid 
-     */
-    map<int, string> id2kmers;
-    map<int, int> id2taxid;
-    map<int, string> id2seqid;
-    int num_reads = read_kfile(k_file, &seqid2taxid, &id2seqid, &id2kmers, &id2taxid);
-    /*For each seqid, in parallel, convert kmer distribution to read distribution*/
-    convert_distribution(o_file, num_reads, &id2seqid, &id2kmers, &id2taxid, my_taxonomy, taxid2node, kmer_len, read_len);
-}
-/***************************************************************************************/
-/*METHOD: READ THE FILE AND SAVE THE SEQID TO KMERS AND TAXID*/
-int read_kfile(string k_file, const map<string, int> *seqid2taxid, map<int, string> *id2seqid, map<int, string> *id2kmers, map<int, int> *id2taxid){
-    /*Initialize Variables*/
-    int s_count = 0;
-    int curr_taxid; 
-    int pos1, pos2, pos3, pos4, pos5;
-    string line;
-    string curr_seqid;
-    string curr_kmers;
-    /*Read through the file*/ 
-    ifstream krakenfile (k_file);
-    if (krakenfile.is_open()){
-        printf("\t>>STEP 3: READING DATABASE.KRAKEN FILE\n");
-        printf("\t\t0 sequences read...");
-        while(getline(krakenfile, line)) {
-            s_count += 1;
-            if (s_count % 10 == 0) 
-                printf("\r\t\t%i sequences read...", s_count);
-            //Find delimiter indices
-            pos1 = line.find("\t");
-            pos2 = line.find("\t", pos1+1);
-            pos3 = line.find("\t", pos2+1);
-            pos4 = line.find("\t", pos3+1);
-            pos5 = line.find("\n", pos4+1);
-            //Extract seqid and taxid 
-            curr_seqid = line.substr(pos1+1, pos2-pos1-1);
-            curr_kmers = line.substr(pos4+1, pos5-pos4-1);
-            curr_taxid = seqid2taxid->find(curr_seqid)->second;
-            //Save in maps
-            id2seqid->insert(std::pair<int, string>(s_count, curr_seqid)); 
-            id2kmers->insert(std::pair<int, string>(s_count,curr_kmers)); 
-            id2taxid->insert(std::pair<int, int>(s_count, curr_taxid));
+    /*Parallel Variables*/
+    
+    FILE * kraken_file = fopen(k_file.c_str(),"r");
+    int fd = fileno(kraken_file);
+    struct stat sb;
+    fstat(fd,&sb);
+    size_t dataSize = sb.st_size;
+    char * data = static_cast<char*>(mmap(NULL, dataSize, PROT_READ,MAP_PRIVATE,fd,0));
+    size_t globalLineCounter = 0;
+    
+    int seqs_read = 0; 
+    /*Iterate over kraken file in parallel*/
+    printf("\t>>STEP 3: CONVERTING KMER MAPPINGS INTO READ CLASSIFICATIONS:\n");
+    printf("\t\t%imers, with a database built using %imers\n",read_len, kmer_len);
+    cerr << "\t\t0 sequences converted...";
+    //Open file to append
+    ofstream outfile;
+    outfile.open(o_file, ofstream::out);
+    #pragma omp parallel 
+    {
+        bool processMore = true;
+        size_t lastReadPos = 0;
+        size_t newLineCnt = 0;
+        size_t i;
+        //Get the line and process
+        while(processMore) {
+            //Get line number
+            int currLineToProcess = __sync_fetch_and_add(&globalLineCounter,1);
+            //Get line 
+            for (i = lastReadPos; i < dataSize; i++){
+                newLineCnt += (data[i]=='\n');
+                if(newLineCnt == currLineToProcess){ 
+                    char * lineStart = &data[i + (data[i]=='\n' ? 1 : 0)];
+                    size_t pos=0; 
+                    while(lineStart[pos] != '\n' && (i + pos) < dataSize){
+                        pos++;
+                    }
+                    char * lineEnd = &lineStart[pos]; 
+                    string kraken_line(lineStart, lineEnd - lineStart);
+                    //Variables for things to save
+                    string seqid = "";
+                    int taxid = -1;
+                    map<int, int> taxids_mapped;
+                    //CALL METHOD TO PROCESS THE LINE
+                    convert_line(kraken_line, &seqid2taxid, read_len, kmer_len, my_taxonomy, taxid2node, seqid, taxid, taxids_mapped); 
+                    //PRINT FOR LINE
+                    #pragma omp atomic
+                    seqs_read += 1;
+                    #pragma omp critical
+                    {
+                        cerr << "\r\t\t" << seqs_read << " sequences converted (finished: ";
+                        cerr << seqid << ")";
+                        //Print read information
+                        outfile << seqid << "\t"; 
+                        outfile << taxid << "\t"; 
+                        outfile << "" << "\t"; 
+                        //Print distributions
+                        for (map<int, int>::iterator it=taxids_mapped.begin(); it!=taxids_mapped.end(); ++it){
+                            outfile << it->first << ":" << it->second << " ";
+                        }
+                        outfile << "\n";
+                    }
+                    lastReadPos = i+1; 
+                    break;
+                }
+            }
+            if(i == dataSize) {
+                processMore = false;
+            }
         }
-        printf("\r\t\t%i total sequences read\n", s_count);
-    } else {
-        printf("  cannot open %s", k_file.c_str());  
-        exit(1);
     }
-    return s_count; 
+    cerr << "\r\t\t" << globalLineCounter << " sequences converted\n";
+
 }
 /***************************************************************************************/
 /*METHOD: CONVERT DISTRIBUTIONS INTO READ MAPPINGS - SEND TO PRINT*/
-void convert_distribution(string o_file, int s_count, const map<int, string> *id2seqid, const map<int, string> *id2kmers, const map<int, int> *id2taxid, const taxonomy *my_taxonomy, const map<int, taxonomy *> *taxid2node, const int kmer_len, const int read_len){
+void convert_line(string line, const map<string,int> *seqid2taxid, const int read_len, const int kmer_len, const taxonomy *my_taxonomy, const map<int, taxonomy *> *taxid2node, string &seqid, int &taxid, map<int,int> &taxids_mapped){ 
+   
+    //Find delimiter indices
+    int pos1, pos2, pos3, pos4, pos5;
+    pos1 = line.find("\t");
+    pos2 = line.find("\t", pos1+1);
+    pos3 = line.find("\t", pos2+1);
+    pos4 = line.find("\t", pos3+1);
+    pos5 = line.find("\n", pos4+1);
+    //Extract seqid and taxid 
+    seqid = line.substr(pos1+1, pos2-pos1-1);
+    taxid = seqid2taxid->find(seqid)->second;
+    string curr_ks = line.substr(pos4+1, pos5-pos4-1);
+
     /*Initialize variables for getting read mappings instead of kmer mappings */
     int n_kmers = read_len - kmer_len + 1;
-    int seqs_read = 0;
-    /*Iterate over taxid2kmers in parallel*/
-    printf("\t>>STEP 4: CONVERTING KMER MAPPINGS INTO READ CLASSIFICATIONS:\n");
-    printf("\t\t%imers, with a database built using %imers\n",read_len, kmer_len);
-    cerr << "\t\t" << seqs_read << " sequences converted...";
-    int i;
-    //Outstream 
-    ofstream outfile;
-    //Open file to append
-    outfile.open(o_file, ofstream::app);
-    #pragma omp parallel for
-    for(i = 1; i <= s_count; i++) {
-        if(i % 10 == 0) {
-        #pragma omp critical
-        {
-            cerr << "\r\t\t" << seqs_read << " sequences converted...(up next: ";
-            cerr << id2seqid->find(i)->second << ")";
-        }
-        }
-        //Get values to parse here
-        string curr_ks = id2kmers->find(i)->second;
-        //Saving values 
-        vector<int> all_kmers;
-        int count_kmers = 0;
-        //Iterate through all of the kmer pairs 
-        int mid, end; 
-        string buf; 
-        std::stringstream ss(curr_ks);
-        int pair_taxid, pair_count;
-        string curr_pair, pair_tstr;
-        while(ss >> buf) {
-            //Extract the string of this pair
-            curr_pair = buf;
-            //Split up this pair into the taxid and the number of kmers
-            mid = curr_pair.find(":");
-            end = curr_pair.find("\n"); 
-            pair_tstr = curr_pair.substr(0,mid);
-            pair_count = atoi(curr_pair.substr(mid+1,end-mid-1).c_str());
-            if (pair_tstr == "A")
-                pair_taxid = 0;
-            else
-                pair_taxid = atoi(pair_tstr.c_str());
-            //Add kmers to queue
-            for (int j = 0; j < pair_count; j++) {
-                all_kmers.push_back(pair_taxid);
-                count_kmers += 1;
-            }
-        }
-        //Process all mappings
-        vector<int> curr_kmers; 
-        map<int,int> taxids_mapped; 
-        int mapped_taxid;
-        int prev_kmer, next_kmer; 
-        int prev_taxid; 
-        //cerr << "\n";
-        //cerr << count_kmers << "\t";
-        for (int k = 0; k < count_kmers; k++) {
-            //cerr << "\t " << k;
-            next_kmer = all_kmers[k];
-            curr_kmers.push_back(next_kmer);
-            if (curr_kmers.size() == n_kmers) {
-                if (prev_kmer == next_kmer) {
-                    mapped_taxid = prev_taxid;
-                } else {
-                    mapped_taxid = get_classification(&curr_kmers, my_taxonomy, taxid2node);
-                } 
-                //if (mapped_taxid != 0) {
-                //Save to map
-                auto t_it = taxids_mapped.find(mapped_taxid);
-                if (t_it == taxids_mapped.end()){
-                    taxids_mapped[mapped_taxid] = 1;
-                } else {
-                    t_it->second += 1;
-                }
-                prev_taxid = mapped_taxid;
-                //Remove last element
-                prev_kmer = curr_kmers[0];
-                curr_kmers.erase(curr_kmers.begin());
-            } 
-        }
-        //Update User
-        #pragma omp atomic
-        seqs_read += 1;
-        #pragma omp critical
-        {
-            //Print read information
-            outfile << id2seqid->find(i)->second << "\t"; 
-            outfile << id2taxid->find(i)->second << "\t"; 
-            outfile << "" << "\t"; 
-            //Print distributions
-            for (map<int, int>::iterator it=taxids_mapped.begin(); it!=taxids_mapped.end(); ++it){
-                outfile << it->first << ":" << it->second << " ";
-            }
-            outfile << "\n";
+    
+    //Saving values 
+    vector<int> all_kmers;
+    int count_kmers = 0;
+    //Iterate through all of the kmer pairs 
+    int mid, end; 
+    string buf; 
+    std::stringstream ss(curr_ks);
+    int pair_taxid, pair_count;
+    string curr_pair, pair_tstr;
+    while(ss >> buf) {
+        //Extract the string of this pair
+        curr_pair = buf;
+        //Split up this pair into the taxid and the number of kmers
+        mid = curr_pair.find(":");
+        end = curr_pair.find("\n"); 
+        pair_tstr = curr_pair.substr(0,mid);
+        pair_count = atoi(curr_pair.substr(mid+1,end-mid-1).c_str());
+        if (pair_tstr == "A")
+            pair_taxid = 0;
+        else
+            pair_taxid = atoi(pair_tstr.c_str());
+        //Add kmers to queue
+        for (int j = 0; j < pair_count; j++) {
+            all_kmers.push_back(pair_taxid);
+            count_kmers += 1;
         }
     }
-    cerr << "\r\t\t" << seqs_read << " sequences converted...\n";
+    //Process all mappings
+    vector<int> curr_kmers; 
+    int mapped_taxid;
+    int prev_kmer, next_kmer; 
+    int prev_taxid; 
+    for (int k = 0; k < count_kmers; k++) {
+        next_kmer = all_kmers[k];
+        curr_kmers.push_back(next_kmer);
+        if (curr_kmers.size() == n_kmers) {
+            if (prev_kmer == next_kmer) {
+                mapped_taxid = prev_taxid;
+            } else {
+                mapped_taxid = get_classification(&curr_kmers, my_taxonomy, taxid2node);
+            } 
+            //if (mapped_taxid != 0) {
+            //Save to map
+            auto t_it = taxids_mapped.find(mapped_taxid);
+            if (t_it == taxids_mapped.end()){
+                taxids_mapped[mapped_taxid] = 1;
+                //.insert(std::pair<int,int>(mapped_taxid, 1));
+            } else {
+                t_it->second += 1;
+            }
+            prev_taxid = mapped_taxid;
+            //Remove last element
+            prev_kmer = curr_kmers[0];
+            curr_kmers.erase(curr_kmers.begin());
+        } 
+    }
 }
 
 
@@ -258,4 +253,3 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
         return max_taxid;
     }
 }
-

@@ -25,12 +25,12 @@
 #include "kmer2read_headers.h"
 #include "taxonomy.h"
 #include "time.h"
+#include <sys/mman.h>
 void evaluate_kfile(string, string, const taxonomy *, const map<int, taxonomy *> *, map<string, int>, const int, const int);
 
-int read_kfile(string, const map<string, int> *, map<int, string> *, map<int, string> *, map<int, int> *);
-
-void convert_distribution(string, int, const map<int, string> *, const map<int, string> *, const map<int, int> *, const taxonomy *, const map<int, taxonomy *> *, const int, const int);
+void convert_line(string, const map<string, int> *, const int, const int, const taxonomy *, const map<int, taxonomy *> *, string &, int &, map<int,int> &);
 
 int get_classification(vector<int> *, const taxonomy *, const map<int, taxonomy *> *);
+
 
 #endif
