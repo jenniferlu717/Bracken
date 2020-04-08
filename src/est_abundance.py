@@ -382,7 +382,7 @@ def main():
         o_file.write(str(int(all_reads)) + '\t')
         o_file.write(str(int(new_all_reads)-int(all_reads))+'\t')
         o_file.write(str(int(new_all_reads)) + '\t')
-        o_file.write("%0.5f\n" % (float(new_all_reads)/float(sum_all_reads)))
+        o_file.write("%0.5f\n" % (float(int(new_all_reads))/float(int(sum_all_reads))))
     o_file.close()
     
     #Print to screen
