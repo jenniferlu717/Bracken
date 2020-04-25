@@ -95,7 +95,7 @@ echo " >> Running Bracken "
 #Check to make sure input file exists 
 if [ -f ${INPUT} ]
 then 
-    if [ ${OUTREPORT} == ""] 
+    if [[ "${OUTREPORT}" = "" ]]
     then
         echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
         python $DIR/src/est_abundance.py -i ${INPUT} \
