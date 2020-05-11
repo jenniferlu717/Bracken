@@ -21,7 +21,7 @@
  */
 
 #include "kmer2read_headers.h"
-#include "time.h"
+#include "ctime.h"
 #include "taxonomy.h"
 #include "kraken_processing.h"
 

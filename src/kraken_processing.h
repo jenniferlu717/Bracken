@@ -24,7 +24,7 @@
 
 #include "kmer2read_headers.h"
 #include "taxonomy.h"
-#include "time.h"
+#include "ctime.h"
 #include <sys/mman.h>
 void evaluate_kfile(string, string, const taxonomy *, const map<int, taxonomy *> *, map<string, int>, const int, const int);
 
