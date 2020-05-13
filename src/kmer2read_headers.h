@@ -19,6 +19,8 @@
  * Jennifer Lu, jlu26@jhmi.edu
  * Updated: 2018/09/06
  */
+#ifndef KMER2READ_HEADERS
+#define KMER2READ_HEADERS
 
 #include <omp.h>
 #include <map>
@@ -54,3 +56,5 @@ using std::map;
 using std::ifstream;
 using std::ofstream;
 using std::string;
+
+#endif
