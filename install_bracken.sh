@@ -35,7 +35,7 @@ cd src/ && make
 
 echo "Bracken installation complete."
 echo 
-echo "For simplification, you can symlink the following files 
+echo "For simplification, you can symlink the following files"
 echo "into a directory in your PATH:"
 echo "    bracken"
 echo "    bracken-build" 
