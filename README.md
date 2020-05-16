@@ -13,7 +13,7 @@ Prior to installing Bracken, please install Kraken:
 Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 
 ## Easy Bracken Installation: 
-    sh install_bracken.sh
+    bash install_bracken.sh
 ## Hard Bracken Installation:
     cd src/ && make
     Add bracken/bracken-build and scripts in src/ to your PATH 
