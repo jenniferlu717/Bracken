@@ -264,14 +264,14 @@ def main():
                 kept_reads += all_reads
                 lvl_taxids[taxid] = [name, all_reads, level_reads, 0]
                 last_taxid = taxid
-                map2lvl_taxids[taxid] = [taxid, all_reads, 0]
+                map2lvl_taxids[taxid] = [taxid, level_reads, 0]
         elif (branch > 0 and test_branch > branch):
             if last_taxid != -1:
-                map2lvl_taxids[taxid] = [last_taxid, all_reads,0]
+                map2lvl_taxids[taxid] = [last_taxid, level_reads,0]
         elif main_lvls.index(level_id[0]) >= branch_lvl:
             #For all nodes below the desired level 
             if last_taxid != -1:
-                map2lvl_taxids[taxid] = [last_taxid, all_reads,0]
+                map2lvl_taxids[taxid] = [last_taxid, level_reads,0]
         #Add node to tree
         curr_node = Tree(name, taxid, level_num, level_id, all_reads, level_reads, None, prev_node)
         prev_node.add_child(curr_node)
@@ -299,8 +299,8 @@ def main():
         curr_node = curr_nodes.pop(0)
         #For each child node, if not at level, add to list of nodes to evaluate 
         for child_node in curr_node.children:
-            if child_node.level_id != args.level:
-                curr_nodes.append(child_node) 
+            #if child_node.level_id != args.level:
+            curr_nodes.append(child_node) 
         #If no level taxids (or below) produce this classification 
         if curr_node.lvl_reads == 0:
             continue 
