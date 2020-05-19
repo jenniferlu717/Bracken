@@ -301,6 +301,9 @@ def main():
         for child_node in curr_node.children:
             #if child_node.level_id != args.level:
             curr_nodes.append(child_node) 
+        #Do not redistribute level reads
+        if curr_node.level_id == args.level:
+            continue
         #If no level taxids (or below) produce this classification 
         if curr_node.lvl_reads == 0:
             continue 
