@@ -262,10 +262,13 @@ def main():
                 #If level contains enough reads - save for abundance estimation
                 n_lvl_est += 1
                 kept_reads += all_reads
-                lvl_taxids[taxid] = [name, all_reads, level_reads, 0]
+                #lvl_taxids[taxid] = [name, all_reads, level_reads, 0]
+                lvl_taxids[taxid] = [name, all_reads, 0, 0]
                 last_taxid = taxid
+                #also distribute level reads....
                 map2lvl_taxids[taxid] = [taxid, level_reads, 0]
         elif (branch > 0 and test_branch > branch):
+            #For all nodes below desired level 
             if last_taxid != -1:
                 map2lvl_taxids[taxid] = [last_taxid, level_reads,0]
         elif main_lvls.index(level_id[0]) >= branch_lvl:
@@ -290,23 +293,20 @@ def main():
         kmer_distr_dict[mapped_taxid] = mapped_taxid_dict
     k_file.close() 
 
-    #For each current parent node, distribute level reads to genomes
+    #For each node, distribute level reads to genomes
     curr_nodes = [root_node]
     nondistributed_reads = 0
     distributed_reads = 0
     lvl_reads = 0
     while len(curr_nodes) > 0:
         curr_node = curr_nodes.pop(0)
-        #For each child node, if not at level, add to list of nodes to evaluate 
+        #For each child node, add to list of nodes to evaluate 
         for child_node in curr_node.children:
-            #if child_node.level_id != args.level:
             curr_nodes.append(child_node) 
-        #Do not redistribute level reads
-        if curr_node.level_id == args.level:
-            continue
-        #If no level taxids (or below) produce this classification 
+        #No reads to distribute 
         if curr_node.lvl_reads == 0:
             continue 
+        #No genomes produce this classification
         if curr_node.taxid not in kmer_distr_dict:
             #print curr_node.name
             nondistributed_reads += curr_node.lvl_reads
@@ -366,7 +366,8 @@ def main():
     sum_all_reads = 0
     for taxid in lvl_taxids:
         [name, all_reads, lvl_reads, added_reads] = lvl_taxids[taxid]
-        new_all_reads = float(all_reads) + float(added_reads)
+        #new_all_reads = float(all_reads) + float(added_reads)
+        new_all_reads = float(added_reads)
         sum_all_reads += new_all_reads
 
     #Print for each classification level: 
@@ -377,7 +378,8 @@ def main():
     for taxid in lvl_taxids:
         [name, all_reads, lvl_reads, added_reads] = lvl_taxids[taxid]
         #Count up all added reads + all_reads already at the level
-        new_all_reads = float(all_reads) + float(added_reads)
+        #new_all_reads = float(all_reads) + float(added_reads)
+        new_all_reads = float(added_reads)
         #Output
         o_file.write(name + '\t')
         o_file.write(taxid + '\t')
