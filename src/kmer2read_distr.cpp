@@ -319,7 +319,8 @@ void construct_taxonomy(const string t_file, taxonomy *my_taxonomy) {
     n_count = 1;
     //printf("\t\t%i node updated", n_count);
     queue<taxonomy *> curr_nodes;
-    //Start with root's children
+    //Start with root'schildren
+    my_taxonomy->set_lvl_num(1);
     vector<taxonomy *> retrieve_nodes = my_taxonomy->get_children();
     for(taxonomy * add_n: retrieve_nodes) { 
         curr_nodes.push(add_n);

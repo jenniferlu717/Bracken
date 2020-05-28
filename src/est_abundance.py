@@ -301,6 +301,8 @@ def main():
     while len(curr_nodes) > 0:
         curr_node = curr_nodes.pop(0)
         #For each child node, add to list of nodes to evaluate 
+        if not isinstance(curr_node,Tree):
+            continue 
         for child_node in curr_node.children:
             curr_nodes.append(child_node) 
         #No reads to distribute 
@@ -414,6 +416,8 @@ def main():
     new_reads = {}
     total_reads = 0
     for curr_leaf in leaf_nodes:
+        if not isinstance(curr_leaf, Tree):
+            continue
         #Move to estimation level
         curr_node = curr_leaf
         skip = False

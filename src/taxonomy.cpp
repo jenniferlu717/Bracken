@@ -29,17 +29,20 @@ taxonomy::taxonomy() {
     this->taxid = -1;
     this->lvl_type = "N";
     this->parent = NULL;
+    this->lvl_num = 0;
 }
 /*Constructor without Parent*/
 taxonomy::taxonomy(int taxid, string level_type) {
     this->taxid = taxid;
     this->lvl_type = level_type;
     this->parent = NULL;
+    this->lvl_num = 0;
 }
 /*Constructor for the Taxonomy Node*/
 taxonomy::taxonomy(int taxid, string level_type, taxonomy *parent) {
     this->taxid = taxid;
     this->lvl_type = level_type;
+    this->lvl_num = 0;
     this->parent = parent;
 }
 /*Destructor */ 

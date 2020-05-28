@@ -183,6 +183,7 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
     int count_ts = 0;
     int curr_t; 
     int save_t; 
+    int found_root = 0;
     //Figure out number of taxids in current list 
     for (int i = 0; i < curr_kmers->size(); i++) {
         //Get the first kmer out 
@@ -190,8 +191,11 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
         //Check for unclassified 
         if (curr_t == 0){
             continue;
+        } else if (curr_t == 1){
+            found_root = 1;
+            continue;   
         }
-        //Save taxids 
+        //Save taxids
         auto x_it = taxid2kmers.find(curr_t);
         if (x_it == taxid2kmers.end()) {
             //Not found in map
@@ -204,7 +208,11 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
     }
     //Determine what to send back
     if (count_ts == 0) {
-        return 0;
+        if (found_root != 0){
+            return 1;
+        } else {
+            return 0;
+        }
     } else if (count_ts == 1) {
         return save_t; 
     } else {
@@ -237,9 +245,16 @@ int get_classification(vector<int> *curr_kmers, const taxonomy *my_taxonomy, con
                 taxonomy * n2 = taxid2node->find(max_taxid)->second;
                 //Get to the same level 
                 while (n1->get_lvl_num() > n2->get_lvl_num()) {
+                    if (n1->get_parent() == NULL){
+                        cerr << n1->get_taxid() << endl;
+                    }
+
                     n1 = n1->get_parent();
                 }
                 while (n1->get_lvl_num() < n2->get_lvl_num()) {
+                    if (n2->get_parent() == NULL){
+                        cerr << n2->get_taxid() << endl;
+                    }
                     n2 = n2->get_parent();
                 }
                 //Find LCA
