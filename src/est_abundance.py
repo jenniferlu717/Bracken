@@ -372,6 +372,9 @@ def main():
         new_all_reads = float(added_reads)
         sum_all_reads += new_all_reads
 
+    if sum_all_reads == 0:
+        sys.stderr.write("Error: no reads found. Please check your Kraken report\n")
+        exit(1) 
     #Print for each classification level: 
     #   - name, taxonomy ID, taxonomy level
     #   - kraken assigned reads, added reads, estimated reads, and fraction total reads 
