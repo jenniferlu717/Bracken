@@ -124,7 +124,7 @@ else
 fi
 #See if database.kraken exists, if not, create
 echo " >> Creating database.kraken [if not found]"
-if [ -f $DATABASE/database.kraken ]
+if [ -s $DATABASE/database.kraken ]
 then
     #database.kraken exists, skip
     echo "          database.kraken exists, skipping creation...."
