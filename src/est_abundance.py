@@ -433,7 +433,8 @@ def main():
         #Determine number of reads to add OR skip 
         if curr_node.taxid in lvl_taxids:
             [name, all_reads, lvl_reads, added_reads] = lvl_taxids[curr_node.taxid]
-            new_total = added_reads + all_reads 
+            #new_total = added_reads + all_reads 
+            new_total = added_reads  
         else: 
             continue 
         #If this level tree already traversed, do not traverse
