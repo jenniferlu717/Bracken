@@ -72,7 +72,6 @@ then
     DATABASE=${DATABASE:0:-1}
 fi
 #Check for Kraken version
-#echo ${KINSTALL}/kraken2
 if [ "$KINSTALL" == "" ]; then
     if hash kraken2 &> /dev/null; then
         KRAKEN="kraken2"
@@ -83,9 +82,13 @@ if [ "$KINSTALL" == "" ]; then
         exit
     fi
 else
-    if [ -f ${KINSTALL}/kraken2 ]; then
+    if [[ "$KINSTALL" =~ [^/]$ ]]
+    then
+        KINSTALL="$KINSTALL/"
+    fi
+    if [ -f ${KINSTALL}kraken2 ]; then
         KRAKEN="kraken2"
-    elif [ -f ${KINSTALL}/kraken ]; then
+    elif [ -f ${KINSTALL}kraken ]; then
         KRAKEN="kraken"
     else
         echo "User must first install kraken or kraken2 and/or specify installation directory of kraken/kraken2 using -x flag"
@@ -124,20 +127,20 @@ else
 fi
 #See if database.kraken exists, if not, create
 echo " >> Creating database.kraken [if not found]"
-if [ -f $DATABASE/database.kraken ]
+if [ -s $DATABASE/database.kraken ]
 then
     #database.kraken exists, skip
     echo "          database.kraken exists, skipping creation...."
 elif [ $KRAKEN == "kraken2" ]
 then
     #database.kraken not found, must create
-    echo "      >> ${KINSTALL}/kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
+    echo "      >> ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
 
-    ${KINSTALL}/kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
+    ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
 else
     #database.kraken not found, must create
-    echo "      >> ${KINSTALL}/kraken --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
-    ${KINSTALL}/kraken --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
+    echo "      >> ${KINSTALL}kraken --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
+    ${KINSTALL}kraken --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
 fi
 echo "          Finished creating database.kraken [in DB folder]"
 #Generate databaseXmers.kmer_distrib
