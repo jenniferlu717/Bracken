@@ -1,4 +1,4 @@
-# Bracken 2.5.3 abundance estimation
+# Bracken 2.6 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
@@ -17,6 +17,8 @@ Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 ## Hard Bracken Installation:
     cd src/ && make
     Add bracken/bracken-build and scripts in src/ to your PATH 
+
+# IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
 
 # Bracken 2.5.3 Changes
 Bracken 2.5.3 has small changes in options to allow for 
@@ -222,4 +224,4 @@ Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
 Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
-Last Updated On: 03/26/2020
+Last Updated On: 08/13/2020
