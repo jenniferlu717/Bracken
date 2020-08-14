@@ -53,6 +53,7 @@
 #   - main
 #   - process_kmer_distribution  
 #   - process_kraken_report 
+#   - check_report_file
 #
 #####################################################################
 import os, sys, argparse
@@ -153,11 +154,35 @@ def process_kraken_report(curr_str):
     level_num = int(spaces/2)
     return [name, taxid, level_num, level_type, all_reads, level_reads]
     
+#check_report_file
+#usage: checks the format of the report file. 
+#   - cannot be kraken output file
+#   - cannot be mpa style 
+#   - expect number of columns?
+#input: name of input file 
+#returns: 0 for correct, 1 for incorrect
+def check_report_file(in_file):
+    sys.stderr.write(">> Checking report file: %s\n" % in_file)   
+    r_file = open(in_file,'r')
+    first_line = r_file.readline() 
+    #Test for kraken output file
+    if first_line[0] == "C" or first_line[0] == "U":
+        sys.stderr.write("\tERROR: Bracken does not use the Kraken default output.\n") 
+        sys.stderr.write("\t       Bracken requires the Kraken report file (--report option with Kraken)\n") 
+        exit(1) 
+    #Test for mpa style 
+    if len(first_line.split("\t")) == 2:
+        sys.stderr.write("\tERROR: Bracken is not compatible with mpa-style reports.\n")
+        sys.stderr.write("\t       Bracken requires the default Kraken report format\n") 
+        exit(1)
+    r_file.close() 
+    return(0)
+    
 #Main method 
 def main():
     #Parse arguments
     parser = argparse.ArgumentParser() 
-    parser.add_argument('-i' ,'--input', dest='input', required=True,
+    parser.add_argument('-i' ,'--input', dest='in_file', required=True,
         help='Input kraken report file.')
     parser.add_argument('-k', '--kmer_distr', dest='kmer_distr', required=True,
         help='Kmer distribution file.')
@@ -212,8 +237,11 @@ def main():
     lvl_nodes = []
     leaf_nodes = []
 
-    #Parse kraken report file and create tree 
-    i_file = open(args.input, 'r')
+    #Error Check
+    check_report_file(args.in_file) 
+
+    #Parse kraken report file /and create tree 
+    i_file = open(args.in_file, 'r')
     map2lvl_taxids = {}
     lvl_taxids = {} 
     last_taxid = -1
@@ -396,7 +424,7 @@ def main():
     o_file.close()
     
     #Print to screen
-    print("BRACKEN SUMMARY (Kraken report: %s)" % args.input)
+    print("BRACKEN SUMMARY (Kraken report: %s)" % args.in_file)
     print("    >>> Threshold: %i " % int(args.thresh))
     print("    >>> Number of %s in sample: %i " % (abundance_lvl, n_lvl_total))
     print("\t  >> Number of %s with reads > threshold: %i " % (abundance_lvl, n_lvl_est))
@@ -455,7 +483,7 @@ def main():
             new_reads[curr_node.taxid] += new_total 
             curr_node.all_reads += new_total
     #Print modified kraken report 
-    new_report, extension = os.path.splitext(args.input)
+    new_report, extension = os.path.splitext(args.in_file)
     r_file = ''
     if args.report_new == '':
         r_file = open(new_report + '_bracken_' + abundance_lvl + extension , 'w')
