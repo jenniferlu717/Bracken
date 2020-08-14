@@ -1,4 +1,8 @@
-# CHANGELOG: 2020/03/26
+# CHANGELOG: 2020/08/13
+
+## 2020/08/13 Updated
+    * Fixed README version number
+    * Adding error catches for est_abundance.py (check for Kraken default output/mpa report) 
 
 ## Released fixes 2020/03/26
     * Remove need for user to specify -w option when running the bracken script  
