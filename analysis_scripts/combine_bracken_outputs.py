@@ -1,4 +1,4 @@
-#! /usr/bin/env python 
+#! /usr/bin/env python2
 #####################################################################
 #combine_bracken_output.py combines multiple Bracken output files for comparison
 #Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
