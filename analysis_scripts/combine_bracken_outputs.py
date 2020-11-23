@@ -130,7 +130,10 @@ def main():
     #Print each sample 
     for name in sample_counts:
         #Print information for classification
-        taxid = sample_counts[name].keys()[0]
+        if int(sys.version_info[0]) >= 3:
+            taxid = list(sample_counts[name].keys())[0]
+        else:
+            taxid = sample_counts[name].keys()[0]
         o_file.write("%s\t%s\t%s" % (name, taxid, level)) 
         #Calculate and print information per sample 
         for sample in all_samples:
