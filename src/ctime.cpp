@@ -19,7 +19,7 @@
  * Jennifer Lu, jlu26@jhmi.edu
  * Updated: 2018/09/06
  */
-#include "time.h"
+#include "ctime.h"
 
 /*************************************************************************
  *  METHOD: timeval_subtract
