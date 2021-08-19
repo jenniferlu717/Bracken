@@ -131,7 +131,7 @@ def process_kmer_distribution(curr_str, lvl_taxids, map2lvl_taxids):
 #   - all reads classified at this level and below in the tree
 #   - reads classified only at this level
 def process_kraken_report(curr_str):
-    split_str = curr_str.strip().split('\t')
+    split_str = curr_str.split('\t')
     try:
         int(split_str[1])
     except ValueError:
@@ -143,7 +143,7 @@ def process_kraken_report(curr_str):
     taxid = split_str[-2] 
     #Get name and spaces
     spaces = 0
-    name = split_str[-1]
+    name = split_str[-1].rstrip()
     for char in name:
         if char == ' ':
             name = name[1:]
