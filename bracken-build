@@ -145,7 +145,7 @@ fi
 echo "          Finished creating database.kraken [in DB folder]"
 #Generate databaseXmers.kmer_distrib
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-DIR=`dirname $(readlink $0 || echo $0)`
+DIR=`dirname $(realpath $0 || echo $0)`
 #cd $DIR
 echo " >> Creating database${READ_LEN}mers.kmer_distrib "
 if [ -f $DIR/src/kmer2read_distr ]; then
