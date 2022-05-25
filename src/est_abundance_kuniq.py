@@ -141,8 +141,22 @@ def process_kraken_report(curr_str):
     #Extract relevant information
     all_reads =  int(split_str[1])
     level_reads = int(split_str[2])
-    level_type = split_str[-3]
-    taxid = split_str[-2] 
+    level_type = split_str[-2]
+    #MAP LEVEL IDS 
+    type2abbr = {} 
+    type2abbr['kingdom'] = 'K'
+    type2abbr['phylum'] = 'P'
+    type2abbr['class'] = 'C'
+    type2abbr['order'] = 'O'
+    type2abbr['family'] = 'F'
+    type2abbr['genus'] = 'G'
+    type2abbr['species'] = 'S'
+    type2abbr['domain'] = 'D'
+    if level_type not in type2abbr:
+        level_type = '-'
+    else:
+        level_type = type2abbr[level_type] 
+    taxid = split_str[-3] 
     #Get name and spaces
     spaces = 0
     name = split_str[-1]
@@ -255,11 +269,11 @@ def main():
         [name, taxid, level_num, level_id, all_reads, level_reads] = report_vals
         total_reads += level_reads
         #Skip unclassified 
-        if level_id == 'U':
+        if name == 'unclassified':
             unclassified_line = line
             u_reads = level_reads
             continue
-        #Tree Root 
+        #Tree Root A
         if taxid == '1':
             root_node = Tree(name, taxid, level_num, 'R', all_reads, level_reads)
             prev_node = root_node
@@ -292,9 +306,10 @@ def main():
                 #If level contains enough reads - save for abundance estimation
                 n_lvl_est += 1
                 kept_reads += all_reads
-                lvl_taxids[taxid] = [name, all_reads, level_reads, 0] #keep level reads
-                #lvl_taxids[taxid] = [name, all_reads, 0, 0] #do not keep level reads
+                #lvl_taxids[taxid] = [name, all_reads, level_reads, 0]
+                lvl_taxids[taxid] = [name, all_reads, 0, 0]
                 last_taxid = taxid
+                #also distribute level reads....
                 map2lvl_taxids[taxid] = [taxid, level_reads, 0]
         elif (branch > 0 and test_branch > branch):
             #For all nodes below desired level 
@@ -322,7 +337,7 @@ def main():
         kmer_distr_dict[mapped_taxid] = mapped_taxid_dict
     k_file.close() 
 
-    #For each PARENT node, distribute level reads to genomes
+    #For each node, distribute level reads to genomes
     curr_nodes = [root_node]
     nondistributed_reads = 0
     distributed_reads = 0
@@ -332,12 +347,8 @@ def main():
         #For each child node, add to list of nodes to evaluate 
         if not isinstance(curr_node,Tree):
             continue 
-        #Do not redistribute level reads
-        if curr_node.level_id == args.level:
-            continue 
-        #If above level, append
         for child_node in curr_node.children:
-            curr_nodes.append(child_node)
+            curr_nodes.append(child_node) 
         #No reads to distribute 
         if curr_node.lvl_reads == 0:
             continue 
@@ -401,8 +412,8 @@ def main():
     sum_all_reads = 0
     for taxid in lvl_taxids:
         [name, all_reads, lvl_reads, added_reads] = lvl_taxids[taxid]
-        new_all_reads = float(all_reads) + float(added_reads)
-        #new_all_reads = float(added_reads)
+        #new_all_reads = float(all_reads) + float(added_reads)
+        new_all_reads = float(added_reads)
         sum_all_reads += new_all_reads
 
     if sum_all_reads == 0:
@@ -416,8 +427,8 @@ def main():
     for taxid in lvl_taxids:
         [name, all_reads, lvl_reads, added_reads] = lvl_taxids[taxid]
         #Count up all added reads + all_reads already at the level
-        new_all_reads = float(all_reads) + float(added_reads)
-        #new_all_reads = float(added_reads)
+        #new_all_reads = float(all_reads) + float(added_reads)
+        new_all_reads = float(added_reads)
         #Output
         o_file.write(name + '\t')
         o_file.write(taxid + '\t')
