@@ -1,4 +1,8 @@
-# CHANGELOG: 2020/08/13
+# CHANGELOG: 2022/06/02
+
+## 2022/06/02 fix
+    * Fixing issue where non-unique genomes cause clade to be removed 
+    * Reads at/below abundance level will not be redistributed
 
 ## 2020/08/13 Updated
     * Fixed README version number
@@ -17,4 +21,4 @@
     * New Year 
 
 # Author information
-Jennifer Lu (jlu26@jhmi.edu)
+Jennifer Lu (jlu26@jhmi.edu, jennifer.lu717@gmail.com)

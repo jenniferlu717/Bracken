@@ -1,4 +1,4 @@
-# Bracken 2.6 abundance estimation
+# Bracken 2.7 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
@@ -19,6 +19,15 @@ Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
     Add bracken/bracken-build and scripts in src/ to your PATH 
 
 # IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
+
+# Bracken 2.7 Changes
+Bracken 2.7 addresses a bug in which non-specific genomes previously caused
+clades to be removed. In a small edit, all reads (including those at abundance
+level/below) were all redistributed to the genome level prior to being added to
+the abundance level. This caused any species (for example) to be removed if no
+genome-specific reads were found. In order to fix this problem, reads will no
+longer be redistributed if at the abundance level/below. Only higher taxonomy
+reads will be distributed down. 
 
 # Bracken 2.5.3 Changes
 Bracken 2.5.3 has small changes in options to allow for 
