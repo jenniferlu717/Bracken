@@ -1,10 +1,17 @@
-# Bracken 2.6 abundance estimation
-For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
+# Bracken 2.6: metagenomics abundance estimation
 
-Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
+- :earth: [Bracken news, updates, and instructions](https://ccb.jhu.edu/software/bracken/)
 
+- :page_facing_up: [Bracken paper on PeerJ (Lu _et al._, 2017)](https://peerj.com/articles/cs-104/)
+
+
+:warning: **IMPORTANT**: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
+
+---
 # Installation
-Bracken is a companion program to Kraken 1 or Kraken 2
+
+Bracken is a companion program to Kraken 1 or Kraken 2.
+
 While Kraken classifies reads to multiple levels in the taxonomic tree, 
 Bracken allows estimation of abundance at a single level using those classifications
 (e.g. Bracken can estimate abundance of species within a sample). 
@@ -12,27 +19,30 @@ Bracken allows estimation of abundance at a single level using those classificat
 Prior to installing Bracken, please install Kraken:
 Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
 
-## Easy Bracken Installation: 
+### Easy Bracken Installation: 
+
     bash install_bracken.sh
-## Hard Bracken Installation:
+
+### Hard Bracken Installation:
     cd src/ && make
     Add bracken/bracken-build and scripts in src/ to your PATH 
 
-# IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
 
-# Bracken 2.5.3 Changes
+# Version history
+
+### • Bracken 2.5.3 Changes
 Bracken 2.5.3 has small changes in options to allow for 
 non-traditional abundance estimation (e.g. S1, G1, K7) and 
 allows specification for naming the kraken-style report 
 with bracken read counts. 
 
-# Bracken 2.5 Changes
+### • Bracken 2.5 Changes
 Bracken 2.5 has a 30x faster build-time. Previously, 1 million 
 database sequences would take hours to process by Bracken. Now, 
 the same process requires less than 10 minutes (with 16 threads).
 All output is identical to previous output. 
 
-# Bracken 2.0 Changes
+### • Bracken 2.0 Changes
 Bracken 2.0 does not introduce any changes in the main algorithm. 
 [Output from Bracken 1.0 is identical to output from Bracken 2.0]
 However, additional scripts are provided to allow easier/faster 
@@ -41,8 +51,11 @@ installation and execution of the Bracken code.
 Users can either run the higher-level scripts now provided, OR 
 follow the individual steps described.
 
-# RUNNING BRACKEN: EASY VERSION
-Steps 0/1 are run once per database. If you would like to generate
+# Running bracken
+
+## Easy procedure
+
+:information_source: Steps 0 and 1 are run once per database. If you would like to generate
 Bracken files for multiple read lengths, repeat Step 1 specifying the same
 database but different read lengths. The script will skip any step already complete. 
 
@@ -50,7 +63,7 @@ If you run Kraken using one of the pre-built MiniKraken databases, you can find
 corresponding Bracken files [here](https://ccb.jhu.edu/software/bracken/). 
 Do not run bracken-build with MiniKraken. 
 
-## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
+### Step 0: Build a Kraken 1.0 or Kraken 2.0 database
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS} 
    
@@ -58,7 +71,7 @@ Do not run bracken-build with MiniKraken.
         * the taxonomy/nodes.dmp file
         * and library sequences `*.fna`, `*.fa`, or `*.fasta` in the `library` directory.
 
-## Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
+### Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
    It is highly encouraged for users to run the following scripts with 10-20 threads.
      [if run single-threaded, kraken/kraken2 and kmer2read_distr will take hours-days]
    Please note that the flags for this script are single lettered
@@ -80,7 +93,7 @@ Do not run bracken-build with MiniKraken.
             `${READ_LEN}`   = the read length of your data 
                                     e.g., if you are using 100 bp reads, set it to `100`. 
 
-## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
+### Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
    Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
         
         kraken --db ${KRAKEN_DB} --threads ${THREADS} ${SAMPLE}.fq > ${SAMPLE}.kraken
@@ -90,13 +103,14 @@ Do not run bracken-build with MiniKraken.
         
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
-## Step 3: Run Bracken for Abundance Estimation
+### Step 3: Run Bracken for Abundance Estimation
         
         bracken -d ${KRAKEN_DB} -i ${SAMPLE}.kreport -o ${SAMPLE}.bracken -r ${READ_LEN} -l ${LEVEL} -t ${THRESHOLD}
 
 
-# RUNNING BRACKEN: HARD VERSION
-## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
+## Complex procedure
+
+### Step 0: Build a Kraken 1.0 or Kraken 2.0 database
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS} 
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS}
    
@@ -104,15 +118,15 @@ Do not run bracken-build with MiniKraken.
         * the taxonomy/nodes.dmp file
         * and library sequences `*.fna`, `*.fa`, or `*.fasta` in the `library` directory.
 
-## Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
+### Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
    * It is highly encouraged for users to run the following scripts with 20 threads.
-### Step 1a: Search all library input sequences against the database
+#### Step 1a: Search all library input sequences against the database
 Run the following scripts WITHIN the Kraken database folder: 
 
         kraken --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
         kraken2 --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
 
-### Step 1b: Compute classifications for each perfect read from one of the input sequences
+#### Step 1b: Compute classifications for each perfect read from one of the input sequences
 
         /src/kmer2read_distr --seqid2taxid ${KRAKEN_DB}/seqid2taxid.map --taxonomy ${KRAKEN_DB}/taxonomy --kraken database.kraken --output database${READ_LEN}mers.kraken
             -k ${KMER_LEN} -l ${READ_LEN} -t ${THREADS}
@@ -126,12 +140,12 @@ Run the following scripts WITHIN the Kraken database folder:
             `${READ_LEN}`   = the read length of your data 
                                     e.g., if you are using 100 bp reads, set it to `100`. 
 
-### Step 1c: Generate the kmer distribution file
+#### Step 1c: Generate the kmer distribution file
 The kmer distribution file is generated using the following command line:
 
     python generate_kmer_distribution.py -i database${READ_LEN}mers.kraken -o database${READ_LEN}mers.kmer_distrib
     
-## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
+### Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
 
 Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
         
@@ -142,7 +156,8 @@ Kraken 2.0 requires the addition of the --report flag
         
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
-## Step 3: Run Bracken for Abundance Estimation
+### Step 3: Run Bracken for Abundance Estimation
+
 Given the expected kmer distribution for genomes in a kraken database along
 with a kraken report file, the number of reads belonging to each species (or
 genus) is estimated using the estimate_abundance.py file, run with the
@@ -203,8 +218,9 @@ The following commands were used to generate each individual file:
 4. ```
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
+
 # Copyright and licensing
-Copyright (C) 2020 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) **2020 Jennifer Lu**, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -217,11 +233,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, see <http://www.gnu.org/licenses/>.
+along with this program; if not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
     
 # Author information
-Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
-Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
+- **Jennifer Lu** (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
+
+- **Florian Breitwieser** (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
 Last Updated On: 08/13/2020
