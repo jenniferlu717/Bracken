@@ -141,8 +141,21 @@ def process_kraken_report(curr_str):
     #Extract relevant information
     all_reads =  int(split_str[1])
     level_reads = int(split_str[2])
-    level_type = split_str[-3]
-    taxid = split_str[-2] 
+    #Account for krakenuniq 
+    try:
+        taxid = int(split_str[-3])
+        taxid = split_str[-3]
+        level_type = split_str[-2]
+        map_kuniq = {'species':'S', 'genus':'G','family':'F',
+             'order':'O','class':'C','phylum':'P','superkingdom':'D', 
+             'kingdom':'K'}
+        if level_type not in map_kuniq:
+            level_type = '-'
+        else:
+            level_type = map_kuniq[level_type]
+    except ValueError:   
+        level_type = split_str[-3]
+        taxid = split_str[-2]
     #Get name and spaces
     spaces = 0
     name = split_str[-1]
@@ -249,13 +262,20 @@ def main():
     last_taxid = -1
     u_reads = 0
     for line in i_file:
+        #Error checking for krakenuniq output files
+        if len(line) == 0:
+            continue
+        elif line[0] == "#":
+            continue
+        elif line[0] == "%":
+            continue
         report_vals = process_kraken_report(line)
         if len(report_vals) < 5:
             continue
         [name, taxid, level_num, level_id, all_reads, level_reads] = report_vals
         total_reads += level_reads
         #Skip unclassified 
-        if level_id == 'U':
+        if (level_id == 'U') or (name == "unclassified"):
             unclassified_line = line
             u_reads = level_reads
             continue
@@ -263,7 +283,7 @@ def main():
         if taxid == '1':
             root_node = Tree(name, taxid, level_num, 'R', all_reads, level_reads)
             prev_node = root_node
-            continue 
+            continue
         #Save leaf nodes
         if level_num != (prev_node.level_num + 1):
             leaf_nodes.append(prev_node)
