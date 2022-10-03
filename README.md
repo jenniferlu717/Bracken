@@ -1,7 +1,11 @@
 # Bracken 2.7 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
-Bracken's peer-reviewed paper (published Jan 2, 2017): https://peerj.com/articles/cs-104/
+Bracken's peer-reviewed paper (published Jan 2, 2017): 
+"Bracken: estimating species abundance in metagenomics data" https://peerj.com/articles/cs-104/
+
+Protocol paper for Kraken 2, Bracken, KrakenUniq, and KrakenTools (published Sept 28, 2022):
+"Metagenome analysis using the Kraken software suite" https://www.nature.com/articles/s41596-022-00738-y
 
 # Installation
 Bracken is a companion program to Kraken 1 or Kraken 2
