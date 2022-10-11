@@ -1,4 +1,7 @@
-# CHANGELOG: 2022/06/02
+# CHANGELOG: 2022/10/11
+
+## 2022/10/11 Version 2.8 
+    * Creating release 2.8 to be compatible with kraken-uniq output reports
 
 ## 2022/06/02 fix
     * Fixing issue where non-unique genomes cause clade to be removed 

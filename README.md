@@ -1,4 +1,4 @@
-# Bracken 2.7 abundance estimation
+# Bracken 2.8 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): 
@@ -8,13 +8,15 @@ Protocol paper for Kraken 2, Bracken, KrakenUniq, and KrakenTools (published Sep
 "Metagenome analysis using the Kraken software suite" https://www.nature.com/articles/s41596-022-00738-y
 
 # Installation
-Bracken is a companion program to Kraken 1 or Kraken 2
+Bracken is a companion program to Kraken 1, KrakenUniq, or Kraken 2
 While Kraken classifies reads to multiple levels in the taxonomic tree, 
 Bracken allows estimation of abundance at a single level using those classifications
 (e.g. Bracken can estimate abundance of species within a sample). 
 
-Prior to installing Bracken, please install Kraken:
+Prior to installing Bracken, please install Kraken/KrakenUniq/Kraken 2:
 Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
+KrakenUniq can be downloaded from here: https://github.com/fbreitwieser/krakenuniq
+Kraken 2 can be downloaded from here: https://github.com/DerrickWood/kraken2/
 
 ## Easy Bracken Installation: 
     bash install_bracken.sh
@@ -23,6 +25,9 @@ Kraken can be downloaded from here: http://ccb.jhu.edu/software/kraken/
     Add bracken/bracken-build and scripts in src/ to your PATH 
 
 # IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
+
+# Bracken 2.8 Changes
+Bracken 2.8 provides compatibility for KrakenUniq
 
 # Bracken 2.7 Changes
 Bracken 2.7 addresses a bug in which non-specific genomes previously caused

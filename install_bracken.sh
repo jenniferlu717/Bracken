@@ -2,7 +2,7 @@
 
 #####################################################################
 #install_bracken.sh checks for all dependencies
-#Copyright (C) 2016-2020 Jennifer Lu, jlu26@jhmi.edu
+#Copyright (C) 2016-2022 Jennifer Lu, jlu26@jhmi.edu
 #
 #This file is part of Bracken.
 #
