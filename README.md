@@ -64,12 +64,11 @@ Steps 0/1 are run once per database. If you would like to generate
 Bracken files for multiple read lengths, repeat Step 1 specifying the same
 database but different read lengths. The script will skip any step already complete. 
 
-If you run Kraken using one of the pre-built MiniKraken databases, you can find 
-corresponding Bracken files [here](https://ccb.jhu.edu/software/bracken/). 
-Do not run bracken-build with MiniKraken. 
+If you run Kraken using one of the pre-built databases, bracken-build must also be run using pre-built databases.
 
-## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
+## Step 0: Build a Kraken 1/KrakenUniq/Kraken2 database
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS}
+        krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS} 
    
    * `${KRAKEN_DB}` is the path to a built Kraken database which also must contain:
@@ -81,31 +80,35 @@ Do not run bracken-build with MiniKraken.
      [if run single-threaded, kraken/kraken2 and kmer2read_distr will take hours-days]
    Please note that the flags for this script are single lettered
       
-   If Kraken 1.0 or Kraken 2.0 is included in your PATH, run the following
+   If Kraken 2 is included in your PATH, run the following
         
         bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN}
 
-   Otherwise, direct the program using "-x" to the installation/location of the ./kraken or ./kraken2 scripts
+   Otherwise, direct the program using "-x" to the installation/location of the ./kraken or ./kraken2 scripts OR
+   specify the version of kraken being used with the "-y" flag. 
         
-        bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN} -x ${KRAKEN_INSTALLATION}
+        bracken-build -d ${KRAKEN_DB} -t ${THREADS} -k ${KMER_LEN} -l ${READ_LEN} -x ${KRAKEN_INSTALLATION} -y ${KRAKEN_TYPE}
 
-            `${KRAKEN_DB}`  = location of the built Kraken 1.0 or Kraken 2.0 database
+            `${KRAKEN_DB}`  = location of the built Kraken 1/Kraken 2/KrakenUniq database
             `${THREADS}`    = number of threads to use with Kraken and the Bracken scripts
             `${KMER_LEN}`   = length of kmer used to build the Kraken database 
-                                    Kraken 1.0 default kmer length = 31
-                                    Kraken 2.0 default kmer length = 35
+                                    Kraken 1/KrakenUniq default kmer length = 31
+                                    Kraken 2 default kmer length = 35
                                     Default set in the script is 35. 
             `${READ_LEN}`   = the read length of your data 
                                     e.g., if you are using 100 bp reads, set it to `100`. 
+            `${KRAKEN_INSTALLATION}` = location of kraken/kraken2/krakenuniq executables
+            `${KRAKEN_TYPE}` = type of Kraken: kraken, krakenuniq, or kraken2 [default: kraken2] 
 
-## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
-   Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
+## Step 2: Run Kraken 1 or Kraken 2 or KrakenUniq AND Generate a report file 
+   Kraken 1 requires a 2-step process to generate the report file needed by Bracken
         
         kraken --db ${KRAKEN_DB} --threads ${THREADS} ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken-report --db ${KRAKEN_DB} ${SAMPLE}.kraken > ${SAMPLE}.kreport 
 
-   Kraken 2.0 requires the addition of the --report flag 
+   Kraken 2 and KrakenUniq requires the addition of the --report flag 
         
+        krakenuniq --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
 ## Step 3: Run Bracken for Abundance Estimation
@@ -116,18 +119,20 @@ Do not run bracken-build with MiniKraken.
 # RUNNING BRACKEN: HARD VERSION
 ## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS} 
+        krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS}
-   
+
    * `${KRAKEN_DB}` is the path to a built Kraken database which also must contain:
         * the taxonomy/nodes.dmp file
         * and library sequences `*.fna`, `*.fa`, or `*.fasta` in the `library` directory.
 
-## Step 1: Generate the Bracken database file (databaseXmers.kmer_distrib)  
+## Step 1: Generate the Bracken database file (databaseXmers.kmer\_distrib)  
    * It is highly encouraged for users to run the following scripts with 20 threads.
 ### Step 1a: Search all library input sequences against the database
 Run the following scripts WITHIN the Kraken database folder: 
 
         kraken --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
+        krakenuniq --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
         kraken2 --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
 
 ### Step 1b: Compute classifications for each perfect read from one of the input sequences
@@ -149,28 +154,29 @@ The kmer distribution file is generated using the following command line:
 
     python generate_kmer_distribution.py -i database${READ_LEN}mers.kraken -o database${READ_LEN}mers.kmer_distrib
     
-## Step 2: Run Kraken 1.0 or Kraken 2.0 AND Generate a report file 
+## Step 2: Run Kraken/Kraken2/KrakenUniq AND Generate a report file 
 
-Kraken 1.0 requires a 2-step process to generate the report file needed by Bracken
+Kraken 1 requires a 2-step process to generate the report file needed by Bracken
         
         kraken --db ${KRAKEN_DB} --threads ${THREADS} ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken-report --db ${KRAKEN_DB} ${SAMPLE}.kraken > ${SAMPLE}.kreport 
 
-Kraken 2.0 requires the addition of the --report flag 
+Kraken 2 and KrakenUniq requires the addition of the --report flag 
         
+        krakenuniq --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
         kraken2 --db ${KRAKEN_DB} --threads ${THREADS} --report ${SAMPLE}.kreport ${SAMPLE}.fq > ${SAMPLE}.kraken
 
 ## Step 3: Run Bracken for Abundance Estimation
 Given the expected kmer distribution for genomes in a kraken database along
 with a kraken report file, the number of reads belonging to each species (or
-genus) is estimated using the estimate_abundance.py file, run with the
+genus) is estimated using the estimate\_abundance.py file, run with the
 following command line:
 
     python estimate_abundance.py -i ${SAMPLE}.kreport -k database${READ_LEN}mers.kmer_distrib -l ${CLASSIFICATION_LVL} -t ${THRESHOLD} -o ${BRACKEN_OUTPUT_FILE}.bracken
 
 The following required parameters must be specified:
 - `${SAMPLE}`.kreport - the kraken report generated for a given dataset 
-- database`${READ_LEN}`mers.kmer_distrib - the file generated by generate_kmer_distribution.py 
+- database`${READ_LEN}`mers.kmer\_distrib - the file generated by generate\_kmer\_distribution.py 
 - `{BRACKEN_OUTPUT_FILE}`.bracken - the desired name of the output file to be generated by the code
 
 The following optional parameters may be specified:
@@ -194,13 +200,13 @@ By default, this script will also recreate the report file using the new Bracken
  5. Unclassified reads will not be included in the report.  
 
 # Example abundance estimation
-The following sample input and output files are included in the sample_data/ folder: 
+The following sample input and output files are included in the sample\_data/ folder: 
     `sample_test.report` - Kraken report file generated from the kraken-report command. 
     `sample_kmer_distr_75mers.txt` - example kmer distribution file generated by generate_kmer_distribution.py
     `sample_output_species_abundance.txt` - Bracken species abundance estimation for sample_test.report 
     `sample_output_bracken.report` - Kraken report style file with all reads redistributed to the species level
 
-Due to size constraints, the following files are not included in the sample_data/ folder:
+Due to size constraints, the following files are not included in the sample\_data/ folder:
     `sample_test.kraken` - Kraken output file used to generate the Kraken report file
     `database.kraken` - Initial Kraken classification of every genome
     `database75mers.kraken_cnts` - Counting of kmer abundances
@@ -222,7 +228,7 @@ The following commands were used to generate each individual file:
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2020 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2022 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -242,4 +248,4 @@ Jennifer Lu (jlu26@jhmi.edu, ccb.jhu.edu/people/jennifer.lu)
 
 Florian Breitwieser (fbreitw1@jhu.edu, ccb.jhu.edu/people/florian)
 
-Last Updated On: 06/02/2022
+Last Updated On: 10/11/2022

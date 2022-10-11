@@ -28,9 +28,10 @@ READ_LEN=100
 DATABASE=""
 KRAKEN="kraken"
 KINSTALL=""
+KTYPE=kraken2
 
 VERSION="2.8"
-while getopts "k:l:d:x:t:" OPTION
+while getopts "k:l:d:x:t:y:" OPTION
     do
         case $OPTION in
             t)
@@ -48,15 +49,17 @@ while getopts "k:l:d:x:t:" OPTION
             x)
                 KINSTALL=$OPTARG
                 ;;
+            y) 
+                KTYPE=$OPTARG
+                ;;
             \?)
-                echo "Usage: bracken_build -k KMER_LEN -l READ_LEN -d MY_DB -x K_INSTALLATION -t THREADS"
+                echo "Usage: bracken_build -k KMER_LEN -l READ_LEN -d MY_DB -x K_INSTALLATION -y K_TYPE -t THREADS"
                 echo "  KMER_LEN       kmer length used to build the kraken database (default: 35)"
                 echo "  THREADS        the number of threads to use when running kraken classification and the bracken scripts"
                 echo "  READ_LEN       read length to get all classifications for (default: 100)"
                 echo "  MY_DB          location of Kraken database"
                 echo "  K_INSTALLATION location of the installed kraken/kraken-build scripts (default assumes scripts can be run from the user path)"
-                echo
-                echo "**Note that this script will try to use kraken2 as default. If kraken2 is not installed, kraken will be used instead"
+                echo "  K_TYPE         version of kraken to use (default = kraken2 - other options: kraken, krakenuniq)"
                 exit
                 ;;
         esac
@@ -67,18 +70,36 @@ echo "       kmer length = $KMER_LEN"
 echo "       read length = $READ_LEN"
 echo "       database    = $DATABASE"
 echo "       threads     = $THREADS"
+echo "       kraken type = $KTYPE"
 if [[ "$DATABASE" =~ "/"$ ]]
 then
     DATABASE=${DATABASE:0:-1}
 fi
 #Check for Kraken version
 if [ "$KINSTALL" == "" ]; then
-    if hash kraken2 &> /dev/null; then
-        KRAKEN="kraken2"
-    elif hash kraken &> /dev/null; then
-        KRAKEN="kraken"
+    if [ "$KTYPE" == "kraken2" ]; then
+        if hash kraken2 &> /dev/null; then
+            KRAKEN="kraken2"
+        else
+            echo "Kraken 2 not installed. Please specify installation directory using -x flag"
+            exit
+        fi
+    elif [ "$KTYPE" == "kraken" ]; then
+        if hash kraken &> /dev/null; then
+            KRAKEN="kraken"
+        else
+            echo "Kraken not installed. Please specify installation directory using -x flag"
+            exit
+        fi
+    elif [ "$KTYPE" == "krakenuniq" ]; then
+        if hash krakenuniq &> /dev/null; then
+            KRAKEN="krakenuniq"
+        else
+            echo "Krakenuniq not installed. Please specify installation directory using -x flag"
+            exit
+        fi
     else
-        echo "User must first install kraken or kraken2 and/or specify installation directory of kraken/kraken2 using -x flag"
+        echo "User must first install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
         exit
     fi
 else
@@ -90,8 +111,10 @@ else
         KRAKEN="kraken2"
     elif [ -f ${KINSTALL}kraken ]; then
         KRAKEN="kraken"
+    elif [ -f ${KINSTALL}krakenuniq ]; then
+        KRAKEN="krakenuniq"
     else
-        echo "User must first install kraken or kraken2 and/or specify installation directory of kraken/kraken2 using -x flag"
+        echo "User must first install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
         exit
     fi
 fi
@@ -120,6 +143,10 @@ then
     then
         echo " ERROR: Kraken Database incomplete: $DATABASE/database.kdb does not exist"
         exit
+    elif [ $KRAKEN == "krakenuniq" ] && [ ! -f $DATABASE/database.kdb ]
+    then
+        echo " ERROR: KrakenUniq Database incomplete: $DATABASE/database.kdb does not exist"
+        exit
     fi
 else
     echo " ERROR: Kraken database $DATABASE" does not exist
@@ -131,12 +158,22 @@ if [ -s $DATABASE/database.kraken ]
 then
     #database.kraken exists, skip
     echo "          database.kraken exists, skipping creation...."
+elif [ -s $DATABASE/database.kraken.tsv ]
+then
+    #database.kraken.tsv exists, skip
+    echo "          database.kraken.tsv exists, skipping creation...."
+    ln -s $DATABASE/database.kraken.tsv $DATABASE/database.kraken
 elif [ $KRAKEN == "kraken2" ]
 then
     #database.kraken not found, must create
     echo "      >> ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
 
     ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
+elif [ $KRAKEN == "krakenuniq"]
+then 
+    #database.kraken not found, must create
+    echo "      >> ${KINSTALL}krakenuniq --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
+    ${KINSTALL}krakenuniq --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
 else
     #database.kraken not found, must create
     echo "      >> ${KINSTALL}kraken --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
