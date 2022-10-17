@@ -99,22 +99,23 @@ if [ "$KINSTALL" == "" ]; then
             exit
         fi
     else
-        echo "User must first install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
+        echo "User must first specify/install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
         exit
     fi
 else
+    #user specified location of kraken installation 
     if [[ "$KINSTALL" =~ [^/]$ ]]
     then
         KINSTALL="$KINSTALL/"
     fi
-    if [ -f ${KINSTALL}kraken2 ]; then
+    if [ -f ${KINSTALL}kraken2 ] && [ ${KTYPE} == "kraken2" ]; then
         KRAKEN="kraken2"
-    elif [ -f ${KINSTALL}kraken ]; then
+    elif [ -f ${KINSTALL}kraken ] && [ ${KTYPE} == "kraken" ]; then
         KRAKEN="kraken"
-    elif [ -f ${KINSTALL}krakenuniq ]; then
+    elif [ -f ${KINSTALL}krakenuniq ] && [ ${KTYPE} == "krakenuniq" ]; then
         KRAKEN="krakenuniq"
     else
-        echo "User must first install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
+        echo "User must first specify/install kraken, krakenuniq, or kraken2 and/or specify installation directory of kraken/krakenuniq/kraken2 using -x flag"
         exit
     fi
 fi
