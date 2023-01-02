@@ -31,7 +31,7 @@ KINSTALL=""
 KTYPE=kraken2
 
 VERSION="2.8"
-while getopts "k:l:d:x:t:y:" OPTION
+while getopts "k:l:d:x:t:y:v" OPTION
     do
         case $OPTION in
             t)
@@ -52,8 +52,13 @@ while getopts "k:l:d:x:t:y:" OPTION
             y) 
                 KTYPE=$OPTARG
                 ;;
+            v) 
+                echo bracken-build.sh v${VERSION}
+                exit 0
+                ;;
             \?)
-                echo "Usage: bracken_build -k KMER_LEN -l READ_LEN -d MY_DB -x K_INSTALLATION -y K_TYPE -t THREADS"
+                echo "Usage: bracken_build -v -k KMER_LEN -l READ_LEN -d MY_DB -x K_INSTALLATION -y K_TYPE -t THREADS"
+                echo "  -v             Echoes the current software version and exits" 
                 echo "  KMER_LEN       kmer length used to build the kraken database (default: 35)"
                 echo "  THREADS        the number of threads to use when running kraken classification and the bracken scripts"
                 echo "  READ_LEN       read length to get all classifications for (default: 100)"
