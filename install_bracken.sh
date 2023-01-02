@@ -40,7 +40,7 @@ cd $DIR
 chmod +x "bracken-build"
 chmod +x "bracken"
 
-#cd src/ && make
+cd src/ && make
 
 echo "Bracken installation complete."
 echo 
