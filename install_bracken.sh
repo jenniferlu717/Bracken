@@ -24,6 +24,15 @@
 set -e
 
 VERSION="2.5.3"
+
+
+if [ ! -z "$@" ];
+then
+    if [ "$@" = "-v" ]; 
+        then echo install_bracken.sh v${VERSION} && exit 0; 
+        fi
+fi
+
 #Move to Bracken installation directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
@@ -31,7 +40,7 @@ cd $DIR
 chmod +x "bracken-build"
 chmod +x "bracken"
 
-cd src/ && make
+#cd src/ && make
 
 echo "Bracken installation complete."
 echo 
