@@ -31,7 +31,7 @@ THRESHOLD=0
 LEVEL="S"
 
 VERSION="2.8"
-while getopts "t:i:o:r:d:w:l:" OPTION
+while getopts "t:i:o:r:d:w:l:v" OPTION
     do 
         case $OPTION in
             t)
@@ -55,8 +55,13 @@ while getopts "t:i:o:r:d:w:l:" OPTION
             w) 
                 OUTREPORT=$OPTARG
                 ;;
+            v) 
+                echo Bracken v${VERSION}
+                exit 0
+                ;;
             \?)
-                echo "Usage: bracken -d MY_DB -i INPUT -o OUTPUT -w OUTREPORT -r READ_LEN -l LEVEL -t THRESHOLD"
+                echo "Usage: bracken -v -d MY_DB -i INPUT -o OUTPUT -w OUTREPORT -r READ_LEN -l LEVEL -t THRESHOLD"
+                echo "  -v             Echoes the current software version and exits" 
                 echo "  MY_DB          location of Kraken database" 
                 echo "  INPUT          Kraken REPORT file to use for abundance estimation"
                 echo "  OUTPUT         file name for Bracken default output" 
