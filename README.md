@@ -172,7 +172,7 @@ with a kraken report file, the number of reads belonging to each species (or
 genus) is estimated using the estimate\_abundance.py file, run with the
 following command line:
 
-    python estimate_abundance.py -i ${SAMPLE}.kreport -k database${READ_LEN}mers.kmer_distrib -l ${CLASSIFICATION_LVL} -t ${THRESHOLD} -o ${BRACKEN_OUTPUT_FILE}.bracken
+    python est_abundance.py -i ${SAMPLE}.kreport -k database${READ_LEN}mers.kmer_distrib -l ${CLASSIFICATION_LVL} -t ${THRESHOLD} -o ${BRACKEN_OUTPUT_FILE}.bracken
 
 The following required parameters must be specified:
 - `${SAMPLE}`.kreport - the kraken report generated for a given dataset 
