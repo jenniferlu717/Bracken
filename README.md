@@ -66,7 +66,9 @@ database but different read lengths. The script will skip any step already compl
 
 If you run Kraken using one of the pre-built databases, bracken-build must also be run using pre-built databases.
 
-## Step 0: Build a Kraken 1/KrakenUniq/Kraken2 database
+## Step 0: Build a Kraken 1/KrakenUniq/Kraken2 database 
+    Run one of the following depending on your kraken installation: 
+    
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS}
         krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS} 
@@ -118,6 +120,8 @@ If you run Kraken using one of the pre-built databases, bracken-build must also 
 
 # RUNNING BRACKEN: HARD VERSION
 ## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
+Run one of the following depending on your kraken installation: 
+
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS} 
         krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS}
@@ -132,10 +136,15 @@ If you run Kraken using one of the pre-built databases, bracken-build must also 
 Run the following scripts WITHIN the Kraken database folder: 
 
         find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + > input.fasta
+        
+        #Run one of the following three commands, depending on your kraken installation/project: 
         kraken --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
         krakenuniq --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
         kraken2 --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
+        
         rm input.fasta
+
+If users would like Bracken files for krakenuniq AND kraken2 in the same folder, please specify a unique extension for each database.kraken file (e.g. database.kuniq, database.k2) 
 
 ### Step 1b: Compute classifications for each perfect read from one of the input sequences
 
