@@ -1,7 +1,7 @@
 #! /usr/bin/env python 
 #####################################################################
 #combine_bracken_output.py combines multiple Bracken output files for comparison
-#Copyright (C) 2016-2017 Jennifer Lu, jlu26@jhmi.edu
+#Copyright (C) 2016-2023 Jennifer Lu, jlu26@jhmi.edu
 
 #This file is part of Bracken.
           
