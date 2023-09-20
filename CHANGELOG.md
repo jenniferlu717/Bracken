@@ -1,4 +1,7 @@
-# CHANGELOG: 2022/10/11
+# CHANGELOG: 2023/09/20
+
+## 2023/09/20 Version 2.9
+   * Creating release 2.9 to be compatible with new kraken-uniq builds 
 
 ## 2022/10/11 Version 2.8 
     * Creating release 2.8 to be compatible with kraken-uniq output reports
