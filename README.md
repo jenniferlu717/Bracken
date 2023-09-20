@@ -1,4 +1,4 @@
-# Bracken 2.8 abundance estimation
+# Bracken 2.9 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): 
@@ -25,6 +25,9 @@ Kraken 2 can be downloaded from here: https://github.com/DerrickWood/kraken2/
     Add bracken/bracken-build and scripts in src/ to your PATH 
 
 # IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
+
+# Bracken 2.9 Changes
+Bracken 2.9 fixes compatibility for KrakenUniq building of the Bracken database. Input files to be concatenated prior to classification against the full database. NOTE: Multiple Bracken databases cannot exist in the same folder. Files will rewrite. User must use the individual command lines to generate different file extensions per bracken file per kraken version.
 
 # Bracken 2.8 Changes
 Bracken 2.8 provides compatibility for KrakenUniq
@@ -239,7 +242,7 @@ The following commands were used to generate each individual file:
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2022 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2023 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
