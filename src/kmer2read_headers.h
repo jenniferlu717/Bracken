@@ -1,6 +1,6 @@
 /*********************************************************************
  * kmer2read_headers.h provides the necessary headers for the kmer2distr script
- * Copyright (C) 2016-2022 Jennifer Lu, jlu26@jhmi.edu
+ * Copyright (C) 2016-2023 Jennifer Lu, jlu26@jhmi.edu
  *
  * This file is part of Bracken.
  * Bracken is free software; you can redistribute it and/or modify
