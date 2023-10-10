@@ -175,7 +175,7 @@ then
     echo "      >> ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"
 
     ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken
-elif [ $KRAKEN == "krakenuniq"]
+elif [ $KRAKEN == "krakenuniq" ]
 then 
     #database.kraken not found, must create
     echo "      >> ${KINSTALL}krakenuniq --db $DATABASE --threads ${THREADS} <( find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + ) > $DATABASE/database.kraken"

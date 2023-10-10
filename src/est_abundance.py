@@ -292,6 +292,8 @@ def main():
             prev_node = prev_node.parent
         #Determine correct level ID
         test_branch = 0
+        if len(level_id.strip()) == 0:
+            level_id = '-'
         if level_id == '-' or len(level_id)> 1:
             if prev_node.level_id in main_lvls:
                 level_id = prev_node.level_id + '1'
