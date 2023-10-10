@@ -1,4 +1,4 @@
-# Bracken 2.8 abundance estimation
+# Bracken 2.9 abundance estimation
 For Bracken news, updates, and instructions: https://ccb.jhu.edu/software/bracken/ 
 
 Bracken's peer-reviewed paper (published Jan 2, 2017): 
@@ -25,6 +25,9 @@ Kraken 2 can be downloaded from here: https://github.com/DerrickWood/kraken2/
     Add bracken/bracken-build and scripts in src/ to your PATH 
 
 # IMPORTANT: Bracken is not compatible with mpa-style reports. Bracken requires the default report format from kraken/kraken2. 
+
+# Bracken 2.9 Changes
+Bracken 2.9 fixes compatibility for KrakenUniq building of the Bracken database. Input files to be concatenated prior to classification against the full database. NOTE: Multiple Bracken databases cannot exist in the same folder. Files will rewrite. User must use the individual command lines to generate different file extensions per bracken file per kraken version.
 
 # Bracken 2.8 Changes
 Bracken 2.8 provides compatibility for KrakenUniq
@@ -66,7 +69,9 @@ database but different read lengths. The script will skip any step already compl
 
 If you run Kraken using one of the pre-built databases, bracken-build must also be run using pre-built databases.
 
-## Step 0: Build a Kraken 1/KrakenUniq/Kraken2 database
+## Step 0: Build a Kraken 1/KrakenUniq/Kraken2 database 
+    Run one of the following depending on your kraken installation: 
+    
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS}
         krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS} 
@@ -118,6 +123,8 @@ If you run Kraken using one of the pre-built databases, bracken-build must also 
 
 # RUNNING BRACKEN: HARD VERSION
 ## Step 0: Build a Kraken 1.0 or Kraken 2.0 database
+Run one of the following depending on your kraken installation: 
+
         kraken-build --db ${KRAKEN_DB} --threads ${THREADS} 
         krakenuniq-build --db ${KRAKEN_DB} --threads ${THREADS}
         kraken2-build --db ${KRAKEN_DB} --threads ${THREADS}
@@ -131,9 +138,16 @@ If you run Kraken using one of the pre-built databases, bracken-build must also 
 ### Step 1a: Search all library input sequences against the database
 Run the following scripts WITHIN the Kraken database folder: 
 
-        kraken --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
-        krakenuniq --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
-        kraken2 --db=${KRAKEN_DB} --threads=10 <( find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + )  > database.kraken
+        find -L library \(-name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -exec cat {} + > input.fasta
+        
+        #Run one of the following three commands, depending on your kraken installation/project: 
+        kraken --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
+        krakenuniq --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
+        kraken2 --db=${KRAKEN_DB} --threads=10 input.fasta  > database.kraken
+        
+        rm input.fasta
+
+If users would like Bracken files for krakenuniq AND kraken2 in the same folder, please specify a unique extension for each database.kraken file (e.g. database.kuniq, database.k2) 
 
 ### Step 1b: Compute classifications for each perfect read from one of the input sequences
 
@@ -228,7 +242,7 @@ The following commands were used to generate each individual file:
     python estimate_abundance.py -i sample_test.report -k sample_kmer_distr_75mers.txt -l S -t 10 -o sample_output_species_abundance.txt 
    ```
 # Copyright and licensing
-Copyright (C) 2022 Jennifer Lu, jlu26@jhmi.edu
+Copyright (C) 2023 Jennifer Lu, jlu26@jhmi.edu
 
 Bracken is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
