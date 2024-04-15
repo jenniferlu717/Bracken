@@ -141,6 +141,8 @@ def process_kraken_report(curr_str):
     #Extract relevant information
     all_reads =  int(split_str[1])
     level_reads = int(split_str[2])
+    if all_reads < level_reads:
+        all_reads, level_reads = level_reads, all_reads
     #Account for krakenuniq 
     try:
         taxid = int(split_str[-3])
