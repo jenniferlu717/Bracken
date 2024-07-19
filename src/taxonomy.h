@@ -52,6 +52,40 @@ class taxonomy{
         int lvl_num;
         string lvl_type;
         vector<taxonomy *> children;
-        taxonomy *parent;  
+        taxonomy *parent;
 };
+
+/*Accessor Methods*/
+
+inline int taxonomy::get_taxid() const { return this->taxid; }
+
+inline int taxonomy::get_lvl_num() const {
+    return this->lvl_num;
+}
+
+inline string taxonomy::get_lvl_type() const {
+    return this->lvl_type;
+}
+
+inline taxonomy* taxonomy::get_parent() const{
+    return this->parent;
+}
+
+inline vector<taxonomy *> taxonomy::get_children() const {
+    return this->children;
+}
+
+/*Methods for manipulating the tree*/
+inline void taxonomy::add_parent(taxonomy *parent) {
+    this->parent = parent;
+}
+
+inline void taxonomy::add_child(taxonomy *new_child) {
+    this->children.push_back(new_child);
+}
+
+inline void taxonomy::set_lvl_num(int num) {
+    this->lvl_num = num;
+}
+
 #endif

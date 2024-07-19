@@ -26,11 +26,16 @@
 #include "taxonomy.h"
 #include "ctime.h"
 #include <sys/mman.h>
+
+#include <deque>
+
+class KmerClassifier;
+
 void evaluate_kfile(string, string, const taxonomy *, const map<int, taxonomy *> *, map<string, int>, const int, const int);
 
-void convert_line(string, const map<string, int> *, const int, const int, const taxonomy *, const map<int, taxonomy *> *, string &, int &, map<int,int> &);
+void convert_line(string, const map<string, int> *, const int, const int, const taxonomy *, const map<int, taxonomy *> *, string &, int &, std::map<int,int> &, KmerClassifier &);
 
-int get_classification(vector<int> *, const taxonomy *, const map<int, taxonomy *> *);
+int get_classification(deque<int> &, const taxonomy *, const map<int, taxonomy *> *);
 
 
 #endif
