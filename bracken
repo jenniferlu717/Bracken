@@ -95,7 +95,7 @@ else
     exit 
 fi
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-DIR=`dirname $(readlink $0 || echo $0)`
+DIR=`dirname $(realpath $0 || echo $0)`
 #cd $DIR
 echo " >> Running Bracken " 
 #Check to make sure input file exists 

@@ -169,6 +169,7 @@ then
     #database.kraken.tsv exists, skip
     echo "          database.kraken.tsv exists, skipping creation...."
     ln -s $DATABASE/database.kraken.tsv $DATABASE/database.kraken
+
 else
     filenames=`find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print`
     if [ $KRAKEN == "kraken2" ]
@@ -195,10 +196,11 @@ else
         echo "          Unable to create database.kraken [in DB folder]"
         exit 1
     fi
+
 fi
 #Generate databaseXmers.kmer_distrib
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-DIR=`dirname $(readlink $0 || echo $0)`
+DIR=`dirname $(realpath $0 || echo $0)`
 #cd $DIR
 echo " >> Creating database${READ_LEN}mers.kmer_distrib "
 if [ -f $DIR/src/kmer2read_distr ]; then
