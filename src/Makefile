@@ -1,10 +1,10 @@
 CXXFLAGS := -c -g -O3 -pedantic -std=c++11
 
 UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
-	CXX := clang++
+ifeq ($(UNAME_S),Linux)
+	CXX ?= g++
 else
-	CXX := g++
+	CXX ?= clang++
 endif
 
 IS_CLANG := $(findstring clang++,$(CXX))
