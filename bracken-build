@@ -30,7 +30,7 @@ KRAKEN="kraken"
 KINSTALL=""
 KTYPE=kraken2
 
-VERSION="2.9"
+VERSION="3.0.1"
 while getopts "k:l:d:x:t:y:v" OPTION
     do
         case $OPTION in
