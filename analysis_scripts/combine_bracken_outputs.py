@@ -125,35 +125,35 @@ def main():
         sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
-        i_file = open(f, "r")
-        for line in i_file:
-            # Header line
-            if header:
-                header = False
-                continue
-            # Process line
-            [name, taxid, taxlvl, kreads, areads, estreads, frac] = line.strip().split(
-                "\t"
-            )
-            estreads = int(estreads)
-            # Error Checks
-            if name not in sample_counts:
-                sample_counts[name] = {}
-                sample_counts[name][taxid] = {}
-            elif taxid != list(sample_counts[name].keys())[0]:
-                sys.exit(
-                    f"Taxonomy IDs not matching for species {name}: "
-                    f"({taxid}\t{sample_counts[name].keys()[0]})"
+        with open(f, "r", encoding="utf-8") as i_file: 
+            for line in i_file:
+                # Header line
+                if header:
+                    header = False
+                    continue
+                # Process line
+                [name, taxid, taxlvl, kreads, areads, estreads, frac] = line.strip().split(
+                    "\t"
                 )
-            if len(level) == 0:
-                level = taxlvl
-            elif level != taxlvl:
-                sys.exit("Taxonomy level not matching between samples")
-            # Save counts
-            total_reads[curr_name] += estreads
-            sample_counts[name][taxid][curr_name] = estreads
-        # Close file
-        i_file.close()
+                estreads = int(estreads)
+                # Error Checks
+                if name not in sample_counts:
+                    sample_counts[name] = {}
+                    sample_counts[name][taxid] = {}
+                elif taxid != list(sample_counts[name].keys())[0]:
+                    sys.exit(
+                        f"Taxonomy IDs not matching for species {name}: "
+                        f"({taxid}\t{sample_counts[name].keys()[0]})"
+                    )
+                if len(level) == 0:
+                    level = taxlvl
+                elif level != taxlvl:
+                    sys.exit("Taxonomy level not matching between samples")
+                # Save counts
+                total_reads[curr_name] += estreads
+                sample_counts[name][taxid][curr_name] = estreads
+            # Close file
+            i_file.close()
 
     # Print output file header
     with open(args.output, "w", encoding="utf-8") as o_file:
