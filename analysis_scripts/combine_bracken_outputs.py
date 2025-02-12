@@ -156,7 +156,7 @@ def main():
         i_file.close()
 
     # Print output file header
-    with open(args.output, "w") as o_file:
+    with open(args.output, "w", encoding="utf-8") as o_file:
         o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
         for name in all_samples:
             o_file.write(f"\t{name}_num\t{name}_frac")
