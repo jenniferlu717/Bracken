@@ -125,7 +125,8 @@ def read_files(args):
                     header = False
                     continue
                 # Process line
-                [name, taxid, taxlvl, kreads, areads, estreads, frac] = line.strip().split(
+                # name, taxid, taxlvl, kreads, areads, estreads, frac
+                [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split(
                     "\t"
                 )
                 estreads = int(estreads)
