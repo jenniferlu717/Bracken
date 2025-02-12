@@ -156,26 +156,26 @@ def main():
         i_file.close()
 
     # Print output file header
-    o_file = open(args.output, "w")
-    o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
-    for name in all_samples:
-        o_file.write(f"\t{name}_num\t{name}_frac")
-    o_file.write("\n")
-    # Print each sample
-    for name in sample_counts:
-        # Print information for classification
-        taxid = list(sample_counts[name].keys())[0]
-        o_file.write(f"{name}\t{taxid}\t{level}")
-        # Calculate and print information per sample
-        for sample in all_samples:
-            if sample in sample_counts[name][taxid]:
-                num = sample_counts[name][taxid][sample]
-                perc = float(num) / float(total_reads[sample])
-                o_file.write(f"\t{num}\t{perc:0.5f}")
-            else:
-                o_file.write("\t0\t0.00000")
+    with open(args.output, "w") as o_file:
+        o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
+        for name in all_samples:
+            o_file.write(f"\t{name}_num\t{name}_frac")
         o_file.write("\n")
-    o_file.close()
+        # Print each sample
+        for name in sample_counts:
+            # Print information for classification
+            taxid = list(sample_counts[name].keys())[0]
+            o_file.write(f"{name}\t{taxid}\t{level}")
+            # Calculate and print information per sample
+            for sample in all_samples:
+                if sample in sample_counts[name][taxid]:
+                    num = sample_counts[name][taxid][sample]
+                    perc = float(num) / float(total_reads[sample])
+                    o_file.write(f"\t{num}\t{perc:0.5f}")
+                else:
+                    o_file.write("\t0\t0.00000")
+            o_file.write("\n")
+        o_file.close()
 
     # End program
     time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
