@@ -127,9 +127,7 @@ def read_files(args):
                     continue
                 # Process line
                 # name, taxid, taxlvl, kreads, areads, estreads, frac
-                [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split(
-                    "\t"
-                )
+                [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split("\t")
                 estreads = int(estreads)
                 # Error Checks
                 if name not in sample_counts:
@@ -175,7 +173,6 @@ def process_and_write_output(args, sample_counts, total_reads, all_samples, leve
                     o_file.write("\t0\t0.00000")
             o_file.write("\n")
         o_file.close()
-
 
 
 def main():
