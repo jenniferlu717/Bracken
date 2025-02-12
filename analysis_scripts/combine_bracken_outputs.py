@@ -109,7 +109,6 @@ def get_sample_names(args):
 #         reader = csv.reader(i_file, delimiter="\t")
 
 
-
 def read_files(args):
     """Read all input_files"""
     # Initialize variables
@@ -159,24 +158,27 @@ def read_files(args):
 def process_and_write_output(args, sample_counts, total_reads, all_samples, level):
     """Do the dict processing and file writing"""
     with open(args.output, "w", encoding="utf-8") as o_file:
-        o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
+        # process header
+        header = ["name", "taxonomy_id", "taxonomy_lvl"]
         for name in all_samples:
-            o_file.write(f"\t{name}_num\t{name}_frac")
-        o_file.write("\n")
+            header += [f"{name}_num", f"{name}_frac"]
+        o_file.write("\t".join(header) + "\n")
+
         # Print each sample
         for name in sample_counts:
+            row = []
             # Print information for classification
             taxid = list(sample_counts[name].keys())[0]
-            o_file.write(f"{name}\t{taxid}\t{level}")
+            row += [name, taxid, level]
             # Calculate and print information per sample
             for sample in all_samples:
                 if sample in sample_counts[name][taxid]:
                     num = sample_counts[name][taxid][sample]
                     perc = float(num) / float(total_reads[sample])
-                    o_file.write(f"\t{num}\t{perc:0.5f}")
+                    row += [num, f"{perc:0.5f}"]
                 else:
-                    o_file.write("\t0\t0.00000")
-            o_file.write("\n")
+                    row += ["0", "0.00000"]
+            o_file.write("\t".join(row) + "\n")
         o_file.close()
 
 
