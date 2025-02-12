@@ -53,9 +53,10 @@
 #####################################################################
 """
 
-import os, sys, argparse
-from time import gmtime
-from time import strftime
+import argparse
+import os
+import sys
+from time import gmtime, strftime
 
 
 def get_arguments():
