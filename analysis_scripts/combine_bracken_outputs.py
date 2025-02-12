@@ -54,10 +54,8 @@ import os, sys, argparse
 from time import gmtime
 from time import strftime
 
-
-# Main method
-def main():
-    # Parse arguments
+def get_arguments():
+    '''Parse arguments'''
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--files",
@@ -81,7 +79,13 @@ def main():
         required=True,
         help="Name of output file with combined Bracken results.",
     )
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    '''Main method'''
+
+    args = get_arguments()
 
     # Start program
     time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
