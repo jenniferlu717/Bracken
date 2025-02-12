@@ -58,7 +58,7 @@ def get_arguments():
     '''Parse arguments'''
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--files",
+        "-f", "--files",
         dest="files",
         nargs="+",
         type=str,
@@ -66,7 +66,7 @@ def get_arguments():
         help="Bracken output files to combine.",
     )
     parser.add_argument(
-        "--names",
+        "-n", "--names",
         dest="names",
         default="",
         required=False,
