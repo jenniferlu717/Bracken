@@ -92,22 +92,23 @@ def get_arguments():
     return parser.parse_args()
 
 
+def get_sample_names(args):
+    """Rename samples or use file names"""
+    all_samples = []
+    if len(args.names) == 0:
+        all_samples = [os.path.basename(f) for f in args.files]
+    else:
+        all_samples = [args.names.split(",")]
+    return all_samples
+
+
 def read_files(args):
     """Read all input_files"""
     # Initialize variables
     sample_counts = {}  # species :: sample1: counts, samples2: counts
-    total_reads = {}  # sample1: totalcounts, sample2: totalcounts
-    all_samples = []
-    # Get sample names
-    if len(args.names) == 0:
-        for f in args.files:
-            curr_sample = os.path.basename(f)
-            total_reads[curr_sample] = 0
-            all_samples.append(curr_sample)
-    else:
-        for curr_sample in args.names.split(","):
-            total_reads[curr_sample] = 0
-            all_samples.append(curr_sample)
+    all_samples = get_sample_names(args)
+    total_reads = {sample: 0 for sample in all_samples}
+
     # Read each file information in
     level = ""
     i = 0
