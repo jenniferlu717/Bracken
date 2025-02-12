@@ -54,11 +54,13 @@ import os, sys, argparse
 from time import gmtime
 from time import strftime
 
+
 def get_arguments():
-    '''Parse arguments'''
+    """Parse arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-f", "--files",
+        "-f",
+        "--files",
         dest="files",
         nargs="+",
         type=str,
@@ -66,7 +68,8 @@ def get_arguments():
         help="Bracken output files to combine.",
     )
     parser.add_argument(
-        "-n", "--names",
+        "-n",
+        "--names",
         dest="names",
         default="",
         required=False,
@@ -83,7 +86,7 @@ def get_arguments():
 
 
 def main():
-    '''Main method'''
+    """Main method"""
 
     args = get_arguments()
 
