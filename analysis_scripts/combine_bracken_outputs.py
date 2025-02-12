@@ -92,15 +92,8 @@ def get_arguments():
     return parser.parse_args()
 
 
-def main():
-    """Main method"""
-
-    args = get_arguments()
-
-    # Start program
-    time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
-    sys.stdout.write(f"PROGRAM START TIME: {time}\n")
-
+def read_files(args):
+    """Read all input_files"""
     # Initialize variables
     sample_counts = {}  # species :: sample1: counts, samples2: counts
     total_reads = {}  # sample1: totalcounts, sample2: totalcounts
@@ -155,7 +148,11 @@ def main():
             # Close file
             i_file.close()
 
-    # Print output file header
+    return sample_counts, total_reads, all_samples, level
+
+
+def process_and_write_output(args, sample_counts, total_reads, all_samples, level):
+    """Do the dict processing and file writing"""
     with open(args.output, "w", encoding="utf-8") as o_file:
         o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
         for name in all_samples:
@@ -177,6 +174,21 @@ def main():
             o_file.write("\n")
         o_file.close()
 
+
+
+def main():
+    """Main method"""
+
+    args = get_arguments()
+
+    # Start program
+    time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
+    sys.stdout.write(f"PROGRAM START TIME: {time}\n")
+
+    sample_counts, total_reads, all_samples, level = read_files(args)
+
+    # Print output file header
+    process_and_write_output(args, sample_counts, total_reads, all_samples, level)
     # End program
     time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
     sys.stdout.write(f"PROGRAM END TIME: {time}\n")
