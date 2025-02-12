@@ -76,7 +76,10 @@ def get_arguments():
         dest="names",
         default="",
         required=False,
-        help="Names for each input file - to be used in column headers of output [separate names with commas]",
+        help=(
+            "Names for each input file - to be used in column headers of output "
+            "[separate names with commas]"
+        ),
     )
     parser.add_argument(
         "-o",
