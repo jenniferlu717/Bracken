@@ -54,6 +54,7 @@
 """
 
 import argparse
+import csv
 import os
 import sys
 from time import gmtime, strftime
@@ -102,6 +103,13 @@ def get_sample_names(args):
     return all_samples
 
 
+# def process_input_file(tsv_filename):
+#     """Dump info from tsv file to the sample_counts, all_samples and total_reads variables"""
+#     with open(tsv_filename, "r", encoding="utf-8") as i_file:
+#         reader = csv.reader(i_file, delimiter="\t")
+
+
+
 def read_files(args):
     """Read all input_files"""
     # Initialize variables
@@ -111,11 +119,8 @@ def read_files(args):
 
     # Read each file information in
     level = ""
-    i = 0
-    for f in args.files:
+    for f, curr_name in zip(args.files, all_samples):
         # Print update
-        curr_name = all_samples[i]
-        i += 1
         sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
