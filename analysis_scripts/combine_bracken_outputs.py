@@ -122,7 +122,7 @@ def main():
         # Print update
         curr_name = all_samples[i]
         i += 1
-        sys.stdout.write("Processing Output File %s:: Sample %s\n" % (f, curr_name))
+        sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
         i_file = open(f, "r")
@@ -142,8 +142,8 @@ def main():
                 sample_counts[name][taxid] = {}
             elif taxid != list(sample_counts[name].keys())[0]:
                 sys.exit(
-                    "Taxonomy IDs not matching for species %s: (%s\t%s)"
-                    % (name, taxid, sample_counts[name].keys()[0])
+                    f"Taxonomy IDs not matching for species {name}: "
+                    f"({taxid}\t{sample_counts[name].keys()[0]})"
                 )
             if len(level) == 0:
                 level = taxlvl
@@ -159,19 +159,19 @@ def main():
     o_file = open(args.output, "w")
     o_file.write("name\ttaxonomy_id\ttaxonomy_lvl")
     for name in all_samples:
-        o_file.write("\t%s_num\t%s_frac" % (name, name))
+        o_file.write(f"\t{name}_num\t{name}_frac")
     o_file.write("\n")
     # Print each sample
     for name in sample_counts:
         # Print information for classification
         taxid = list(sample_counts[name].keys())[0]
-        o_file.write("%s\t%s\t%s" % (name, taxid, level))
+        o_file.write(f"{name}\t{taxid}\t{level}")
         # Calculate and print information per sample
         for sample in all_samples:
             if sample in sample_counts[name][taxid]:
                 num = sample_counts[name][taxid][sample]
                 perc = float(num) / float(total_reads[sample])
-                o_file.write("\t%i\t%0.5f" % (num, perc))
+                o_file.write(f"\t{num}\t{perc:0.5f}")
             else:
                 o_file.write("\t0\t0.00000")
         o_file.write("\n")
