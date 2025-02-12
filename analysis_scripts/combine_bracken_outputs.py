@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+"""
 #####################################################################
 # combine_bracken_output.py combines multiple Bracken output files for comparison
 # Copyright (C) 2016-2023 Jennifer Lu, jlu26@jhmi.edu
@@ -50,6 +51,8 @@
 # Methods:
 #   - main
 #####################################################################
+"""
+
 import os, sys, argparse
 from time import gmtime
 from time import strftime
