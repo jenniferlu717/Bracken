@@ -99,7 +99,7 @@ def main():
 
     # Start program
     time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
-    sys.stdout.write("PROGRAM START TIME: " + time + "\n")
+    sys.stdout.write(f"PROGRAM START TIME: {time}\n")
 
     # Initialize variables
     sample_counts = {}  # species :: sample1: counts, samples2: counts
@@ -125,7 +125,7 @@ def main():
         sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
-        with open(f, "r", encoding="utf-8") as i_file: 
+        with open(f, "r", encoding="utf-8") as i_file:
             for line in i_file:
                 # Header line
                 if header:
@@ -179,7 +179,7 @@ def main():
 
     # End program
     time = strftime("%m-%d-%Y %H:%M:%S", gmtime())
-    sys.stdout.write("PROGRAM END TIME: " + time + "\n")
+    sys.stdout.write(f"PROGRAM END TIME: {time}\n")
 
 
 if __name__ == "__main__":
