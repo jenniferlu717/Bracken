@@ -113,7 +113,7 @@ def read_files(args):
     level = ""
     for f, curr_name in zip(args.files, all_samples):
         # Print update
-        # sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
+        sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
         with open(f, "r", encoding="utf-8") as i_file:
@@ -127,23 +127,22 @@ def read_files(args):
                 [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split("\t")
                 estreads = int(estreads)
                 # Error Checks
+
                 if taxid not in sample_counts:
                     sample_counts[taxid] = {}
                     sample_counts[taxid][name] = {}
                 elif taxid in sample_counts and name not in sample_counts[taxid]:
                     sample_counts[taxid][name] = {}
-                # elif taxid != list(sample_counts[taxid].keys())[0]:
-                #     sys.exit(
-                #         f"Taxonomy IDs not matching for species {name}: "
-                #         f"({taxid}\t{list(sample_counts[taxid].keys())[0]})"
-                #     )
+
                 if len(level) == 0:
                     level = taxlvl
                 elif level != taxlvl:
                     sys.exit("Taxonomy level not matching between samples")
+
                 # Save counts
                 total_reads[curr_name] += estreads
                 sample_counts[taxid][name][curr_name] = estreads
+
             # Close file
             i_file.close()
 
