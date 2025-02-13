@@ -102,12 +102,6 @@ def get_sample_names(args):
     return all_samples
 
 
-# def process_input_file(tsv_filename):
-#     """Dump info from tsv file to the sample_counts, all_samples and total_reads variables"""
-#     with open(tsv_filename, "r", encoding="utf-8") as i_file:
-#         reader = csv.reader(i_file, delimiter="\t")
-
-
 def read_files(args):
     """Read all input_files"""
     # Initialize variables
@@ -133,13 +127,14 @@ def read_files(args):
                 [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split("\t")
                 estreads = int(estreads)
                 # Error Checks
+                # print(list(sample_counts[name].keys()))
                 if name not in sample_counts:
                     sample_counts[name] = {}
                     sample_counts[name][taxid] = {}
                 elif taxid != list(sample_counts[name].keys())[0]:
                     sys.exit(
                         f"Taxonomy IDs not matching for species {name}: "
-                        f"({taxid}\t{sample_counts[name].keys()[0]})"
+                        f"({taxid}\t{list(sample_counts[name].keys())[0]})"
                     )
                 if len(level) == 0:
                     level = taxlvl
