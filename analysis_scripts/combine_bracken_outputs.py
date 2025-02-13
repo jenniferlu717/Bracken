@@ -54,7 +54,6 @@
 """
 
 import argparse
-import csv
 import os
 import sys
 from time import gmtime, strftime
