@@ -178,6 +178,7 @@ def process_and_write_output(args, sample_counts, total_reads, all_samples, leve
                     row += [num, f"{perc:0.5f}"]
                 else:
                     row += ["0", "0.00000"]
+            row = [str(x) for x in row]
             o_file.write("\t".join(row) + "\n")
         o_file.close()
 
