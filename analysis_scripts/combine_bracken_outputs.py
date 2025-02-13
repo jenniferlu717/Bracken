@@ -113,7 +113,7 @@ def read_files(args):
     level = ""
     for f, curr_name in zip(args.files, all_samples):
         # Print update
-        sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
+        # sys.stdout.write(f"Processing Output File {f}:: Sample {curr_name}\n")
         # Iterate through file
         header = True
         with open(f, "r", encoding="utf-8") as i_file:
@@ -127,22 +127,23 @@ def read_files(args):
                 [name, taxid, taxlvl, _, _, estreads, _] = line.strip().split("\t")
                 estreads = int(estreads)
                 # Error Checks
-                # print(list(sample_counts[name].keys()))
-                if name not in sample_counts:
-                    sample_counts[name] = {}
-                    sample_counts[name][taxid] = {}
-                elif taxid != list(sample_counts[name].keys())[0]:
-                    sys.exit(
-                        f"Taxonomy IDs not matching for species {name}: "
-                        f"({taxid}\t{list(sample_counts[name].keys())[0]})"
-                    )
+                if taxid not in sample_counts:
+                    sample_counts[taxid] = {}
+                    sample_counts[taxid][name] = {}
+                elif taxid in sample_counts and name not in sample_counts[taxid]:
+                    sample_counts[taxid][name] = {}
+                # elif taxid != list(sample_counts[taxid].keys())[0]:
+                #     sys.exit(
+                #         f"Taxonomy IDs not matching for species {name}: "
+                #         f"({taxid}\t{list(sample_counts[taxid].keys())[0]})"
+                #     )
                 if len(level) == 0:
                     level = taxlvl
                 elif level != taxlvl:
                     sys.exit("Taxonomy level not matching between samples")
                 # Save counts
                 total_reads[curr_name] += estreads
-                sample_counts[name][taxid][curr_name] = estreads
+                sample_counts[taxid][name][curr_name] = estreads
             # Close file
             i_file.close()
 
@@ -159,19 +160,19 @@ def process_and_write_output(args, sample_counts, total_reads, all_samples, leve
         o_file.write("\t".join(header) + "\n")
 
         # Print each sample
-        for name in sample_counts:
+        for taxid in sample_counts.keys():
             row = []
             # Print information for classification
-            taxid = list(sample_counts[name].keys())[0]
-            row += [name, taxid, level]
-            # Calculate and print information per sample
-            for sample in all_samples:
-                if sample in sample_counts[name][taxid]:
-                    num = sample_counts[name][taxid][sample]
-                    perc = float(num) / float(total_reads[sample])
-                    row += [num, f"{perc:0.5f}"]
-                else:
-                    row += ["0", "0.00000"]
+            for name in sample_counts[taxid].keys():
+                row += [name, taxid, level]
+                # Calculate and print information per sample
+                for sample in all_samples:
+                    if sample in sample_counts[taxid][name].keys():
+                        num = sample_counts[taxid][name][sample]
+                        perc = float(num) / float(total_reads[sample])
+                        row += [num, f"{perc:0.5f}"]
+                    else:
+                        row += ["0", "0.00000"]
             row = [str(x) for x in row]
             o_file.write("\t".join(row) + "\n")
         o_file.close()
