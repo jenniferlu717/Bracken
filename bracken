@@ -29,9 +29,10 @@ DATABASE=""
 READ_LEN=100
 THRESHOLD=10
 LEVEL="S"
+ESTIMATE=""
 
-VERSION="3.0.1"
-while getopts "t:i:o:r:d:w:l:v" OPTION
+VERSION="3.0.2"
+while getopts "t:i:o:r:d:w:l:v:e" OPTION
     do 
         case $OPTION in
             t)
@@ -59,9 +60,13 @@ while getopts "t:i:o:r:d:w:l:v" OPTION
                 echo Bracken v${VERSION}
                 exit 0
                 ;;
+            e) 
+                ESTIMATE=--estimate
+                ;;
             \?)
                 echo "Usage: bracken -v -d MY_DB -i INPUT -o OUTPUT -w OUTREPORT -r READ_LEN -l LEVEL -t THRESHOLD"
                 echo "  -v             Echoes the current software version and exits" 
+                echo "  -e             Automatically estimate the most specific available level. Overrides any passed level passed with -l."
                 echo "  MY_DB          location of Kraken database" 
                 echo "  INPUT          Kraken REPORT file to use for abundance estimation"
                 echo "  OUTPUT         file name for Bracken default output" 
@@ -100,23 +105,25 @@ DIR=`dirname $(realpath $0 || echo $0)`
 echo " >> Running Bracken " 
 #Check to make sure input file exists 
 if [ -f ${INPUT} ]
-then 
+then
     if [[ "${OUTREPORT}" = "" ]]
     then
-        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
+        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD} ${ESTIMATE}"
         python $DIR/src/est_abundance.py -i ${INPUT} \
             -o ${OUTPUT} \
             -k $DATABASE/database${READ_LEN}mers.kmer_distrib \
             -l ${LEVEL} \
-            -t ${THRESHOLD}
+            -t ${THRESHOLD} \
+            ${ESTIMATE}
     else
-        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD}"
-        python $DIR/src/est_abundance.py -i ${INPUT} \
+        echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD} ${ESTIMATE}"
+        echo python $DIR/src/est_abundance.py -i ${INPUT} \
             -o ${OUTPUT} \
             --out-report ${OUTREPORT} \
             -k $DATABASE/database${READ_LEN}mers.kmer_distrib \
             -l ${LEVEL} \
-            -t ${THRESHOLD}
+            -t ${THRESHOLD} \
+            ${ESTIMATE}
     fi
 else
     echo "  ERROR: Input file ${INPUT} does not exist" 
