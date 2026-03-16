@@ -71,9 +71,9 @@ while getopts "t:i:o:r:d:w:l:v:e" OPTION
                 echo "  INPUT          Kraken REPORT file to use for abundance estimation"
                 echo "  OUTPUT         file name for Bracken default output" 
                 echo "  OUTREPORT      New Kraken REPORT output file with Bracken read estimates"
-                echo "  READ_LEN       read length to get all classifications for (default: 100)"
-                echo "  LEVEL          level to estimate abundance at [options: D,P,C,O,F,G,S,S1,etc] (default: S)"
-                echo "  THRESHOLD      number of reads required PRIOR to abundance estimation to perform reestimation (default: 0)"
+                echo "  READ_LEN       read length to get all classifications for (default: ${READ_LEN})"
+                echo "  LEVEL          level to estimate abundance at [options: D,P,C,O,F,G,S,S1,etc] (default: ${LEVEL})"
+                echo "  THRESHOLD      number of reads required PRIOR to abundance estimation to perform reestimation (default: ${THRESHOLD})"
                 echo
                 exit
                 ;;
