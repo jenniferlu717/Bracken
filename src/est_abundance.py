@@ -563,11 +563,12 @@ def main():
         curr_node = curr_nodes.pop(0)
         #For each child node, add to list of nodes to evaluate 
         children = 0
-        for child_node in sorted(curr_node.children, key=operator.attrgetter('all_reads')):
-            #Add if at level or above 
-            if child_node.level_id[0] != args.level or child_node.level_id == args.level:
-                curr_nodes.insert(0,child_node) 
-                children += 1
+        if curr_node.level_id != args.level:
+            for child_node in sorted(curr_node.children, key=operator.attrgetter('all_reads')):
+                #Add if at level or above 
+                if child_node.level_id[0] != args.level or child_node.level_id == args.level:
+                    curr_nodes.insert(0,child_node) 
+                    children += 1
         #Print information for this level 
         #For level where estimate is made
         if curr_node.taxid in lvl_taxids:
