@@ -117,7 +117,7 @@ then
             ${ESTIMATE}
     else
         echo "      >> python src/est_abundance.py -i ${INPUT} -o ${OUTPUT} -k $DATABASE/database${READ_LEN}mers.kmer_distrib -l ${LEVEL} -t ${THRESHOLD} ${ESTIMATE}"
-        echo python $DIR/src/est_abundance.py -i ${INPUT} \
+        python $DIR/src/est_abundance.py -i ${INPUT} \
             -o ${OUTPUT} \
             --out-report ${OUTREPORT} \
             -k $DATABASE/database${READ_LEN}mers.kmer_distrib \
