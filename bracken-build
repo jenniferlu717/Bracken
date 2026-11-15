@@ -174,9 +174,7 @@ else
     if [ $KRAKEN == "kraken2" ]
     then
         #database.kraken not found, must create
-        #Stream the library files to kraken2 on stdin: a large database has more
-        #files than fit on one command line ("Argument list too long").
-        #"awk 1" copies the files and ends a last line that lacks a newline.
+        #Stream files on stdin: too many for one command line. "awk 1" adds a missing final newline.
         echo "      >> find -L $DATABASE/library [fasta files] | ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} /dev/stdin > $DATABASE/database.kraken.tmp"
         ( set -o pipefail
           if [ -z "$(find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print -quit)" ]
