@@ -350,6 +350,8 @@ void convert_line(string line, const std::map<string,int> *seqid2taxid, const in
             pair_taxid = 0;
         else {
             pair_taxid = fast_atou(data);
+            if (pair_taxid > 1 && taxid2node->find(pair_taxid) == taxid2node->end())
+                pair_taxid = 0;
         }
         // Add kmers to queue
         all_kmers.push_back(std::make_pair(pair_taxid, pair_count));
