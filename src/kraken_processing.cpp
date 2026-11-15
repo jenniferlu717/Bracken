@@ -350,7 +350,6 @@ void convert_line(string line, const std::map<string,int> *seqid2taxid, const in
             pair_taxid = 0;
         else {
             pair_taxid = fast_atou(data);
-            // A taxid missing from nodes.dmp has no node: count it as unclassified
             if (pair_taxid > 1 && taxid2node->find(pair_taxid) == taxid2node->end())
                 pair_taxid = 0;
         }
