@@ -171,19 +171,29 @@ then
     ln -s $DATABASE/database.kraken.tsv $DATABASE/database.kraken
 
 else
-    filenames=`find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print`
     if [ $KRAKEN == "kraken2" ]
     then
         #database.kraken not found, must create
-        echo "      >> ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp"
-        ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp
+        #Stream the library files to kraken2 on stdin: a large database has more
+        #files than fit on one command line ("Argument list too long").
+        #"awk 1" copies the files and ends a last line that lacks a newline.
+        echo "      >> find -L $DATABASE/library [fasta files] | ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} /dev/stdin > $DATABASE/database.kraken.tmp"
+        ( set -o pipefail
+          if [ -z "$(find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print -quit)" ]
+          then
+              echo "          No fasta files found in $DATABASE/library" >&2
+              exit 1
+          fi
+          find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print0 | xargs -0 awk 1 | ${KINSTALL}kraken2 --db $DATABASE --threads ${THREADS} /dev/stdin > $DATABASE/database.kraken.tmp )
     elif [ $KRAKEN == "krakenuniq" ]
     then
         #database.kraken not found, must create
+        filenames=`find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print`
         echo "      >> ${KINSTALL}krakenuniq --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp"
         ${KINSTALL}krakenuniq --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp
     else
         #database.kraken not found, must create
+        filenames=`find -L $DATABASE/library \( -name "*.fna" -o -name "*.fa" -o -name "*.fasta" \) -print`
         echo "      >> ${KINSTALL}kraken --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp"
         ${KINSTALL}kraken --db $DATABASE --threads ${THREADS} $filenames > $DATABASE/database.kraken.tmp
     fi 
